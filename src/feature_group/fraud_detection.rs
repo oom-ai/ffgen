@@ -5,7 +5,6 @@ use fake::{
 };
 use rand::Rng;
 use serde::Serialize;
-use std::ops::Range;
 
 #[derive(Debug, Serialize)]
 pub struct UserAccount {
@@ -54,14 +53,18 @@ impl FakeFeatureGroup for UserTransactionStats {
 }
 
 impl FakeFeatureLabel for UserLabel {
-    fn fake<R, Tz>(rng: &mut R, id_range: &Range<usize>, time_range: &Range<DateTime<Tz>>) -> Self
+    fn fake<R, Tz>(
+        rng: &mut R,
+        (id_start, id_end): &(usize, usize),
+        (tm_start, tm_end): &(DateTime<Tz>, DateTime<Tz>),
+    ) -> Self
     where
         R: Rng + ?Sized,
         Tz: TimeZone,
     {
         Self {
-            user:      id_range.fake_with_rng(rng),
-            timestamp: (time_range.start.timestamp()..time_range.end.timestamp()).fake_with_rng(rng),
+            user:      (*id_start..*id_end).fake_with_rng(rng),
+            timestamp: (tm_start.timestamp()..tm_end.timestamp()).fake_with_rng(rng),
         }
     }
 }
