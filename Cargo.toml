@@ -7,7 +7,8 @@ edition = "2021"
 
 [dependencies]
 structopt = "0.3"
-fake = "2.4.3"
+fake = { version = "2.4.3", features = ["chrono", "uuid"] }
 rand = "0.8.4"
 serde = { version = "1.0.130", features = ["derive"] }
 csv = "1.1.6"
+chrono = { version = "0.4.19", features = ["serde"] }
