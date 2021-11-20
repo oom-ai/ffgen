@@ -1,5 +1,7 @@
 use chrono::Utc;
-use structopt::clap::{self, arg_enum, AppSettings};
+use structopt::clap::{self, AppSettings};
+use strum::{EnumString, EnumVariantNames, VariantNames};
+
 pub use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -17,21 +19,17 @@ pub enum Opt {
     },
 
     /// Scenario
-    Generate {
-        /// Target scenario name
-        #[structopt(possible_values = &Scenario::variants(), case_insensitive = true)]
-        scenario: Scenario,
-
-        /// Subcommand
-        #[structopt(subcommand)]
-        typecommand: TypeCommand,
-    },
+    Generate(TypeCommand),
 }
 
 #[derive(Debug, StructOpt)]
 pub enum TypeCommand {
     /// Feature group values
     Group {
+        /// Target scenario name
+        #[structopt(possible_values = &Scenario::VARIANTS, case_insensitive = true)]
+        scenario: Scenario,
+
         /// Group name
         #[structopt(name = "group")]
         group: String,
@@ -45,6 +43,10 @@ pub enum TypeCommand {
 
     /// Feature label values
     Label {
+        /// Target scenario name
+        #[structopt(possible_values = &Scenario::VARIANTS, case_insensitive = true)]
+        scenario: Scenario,
+
         #[structopt(long, default_value = "1")]
         id_start: usize,
 
@@ -62,9 +64,8 @@ pub enum TypeCommand {
     },
 }
 
-arg_enum! {
-    #[allow(non_camel_case_types)]
-    pub enum Scenario {
-        fraud_detection,
-    }
+#[derive(EnumString, EnumVariantNames, Debug)]
+#[strum(serialize_all = "snake_case")]
+pub enum Scenario {
+    FraudDetection,
 }
