@@ -23,7 +23,7 @@ pub struct UserTransactionStats {
 }
 
 #[derive(Debug, Serialize)]
-pub struct UserLabel {
+pub struct Label {
     user:      usize,
     timestamp: i64,
 }
@@ -52,7 +52,7 @@ impl FakeFeatureGroup for UserTransactionStats {
     }
 }
 
-impl FakeFeatureLabel for UserLabel {
+impl FakeFeatureLabel for Label {
     fn fake<R, Tz>(
         rng: &mut R,
         (id_start, id_end): &(usize, usize),
