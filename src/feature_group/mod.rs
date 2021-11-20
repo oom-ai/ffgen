@@ -8,6 +8,7 @@ pub mod prelude {
     pub use super::fake_feature_label;
     pub use super::FakeFeatureGroup;
     pub use super::FakeFeatureLabel;
+    pub use super::fraud_detection;
 }
 
 pub trait FakeFeatureGroup {

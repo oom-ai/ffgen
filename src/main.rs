@@ -25,20 +25,24 @@ fn main() -> Result<()> {
                     name,
                     id_start,
                     limit,
-                } => match scenario {
-                    Scenario::FraudDetection => {
-                        use crate::feature_group::fraud_detection::*;
-                        match name.as_ref() {
-                            "account" => fake_feature_group(&FakeAccount, rng, id_start)
-                                .take(limit)
-                                .try_for_each(|x: Account| csvw.serialize(x))?,
-                            "transaction_stats" => fake_feature_group(&FakeTransactionStats, rng, id_start)
-                                .take(limit)
-                                .try_for_each(|x| csvw.serialize(x))?,
-                            _ => return Err("group not found".into()),
+                } => {
+                    macro_rules! ffg {
+                            ($($p:expr => $e:expr),* $(,)?) => {
+                                match name.as_ref() {
+                                    $($p => fake_feature_group(&$e, rng, id_start)
+                                     .take(limit)
+                                     .try_for_each(|x| csvw.serialize(x))?,)*
+                                    g => return Err(format!("group '{}' not found", g).into()),
+                                }
+                            };
                         }
+                    match scenario {
+                        Scenario::FraudDetection => ffg! {
+                            "account"           => fraud_detection::FakeAccount,
+                            "transaction_stats" => fraud_detection::FakeTransactionStats,
+                        },
                     }
-                },
+                }
                 TypeCommand::Label {
                     scenario,
                     id_start,
