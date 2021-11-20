@@ -28,9 +28,14 @@ pub struct Label {
     timestamp: i64,
 }
 
-impl FakeFeatureGroup for Account {
-    fn fake_with_id<R: Rng + ?Sized>(rng: &mut R, id: usize) -> Self {
-        Self {
+pub struct FakeAccount;
+pub struct FakeTransactionStats;
+pub struct FakeLabel;
+
+impl FakeFeatureGroup for FakeAccount {
+    type Group = Account;
+    fn fake<R: Rng + ?Sized>(&self, rng: &mut R, id: usize) -> Self::Group {
+        Account {
             user:              id,
             state:             StateName().fake_with_rng(rng),
             credit_score:      (500..750).fake_with_rng(rng),
@@ -40,11 +45,13 @@ impl FakeFeatureGroup for Account {
     }
 }
 
-impl FakeFeatureGroup for TransactionStats {
-    fn fake_with_id<R: Rng + ?Sized>(rng: &mut R, id: usize) -> Self {
+impl FakeFeatureGroup for FakeTransactionStats {
+    type Group = TransactionStats;
+
+    fn fake<R: Rng + ?Sized>(&self, rng: &mut R, id: usize) -> Self::Group {
         let transaction_account_7d = (0..10).fake_with_rng(rng);
         let transaction_account_30d = (transaction_account_7d..50).fake_with_rng(rng);
-        Self {
+        TransactionStats {
             user:                  id,
             transaction_count_7d:  transaction_account_7d,
             transaction_count_30d: transaction_account_30d,
@@ -52,17 +59,19 @@ impl FakeFeatureGroup for TransactionStats {
     }
 }
 
-impl FakeFeatureLabel for Label {
+impl FakeFeatureLabel for FakeLabel {
+    type Label = Label;
     fn fake<R, Tz>(
+        &self,
         rng: &mut R,
         (id_start, id_end): &(usize, usize),
         (tm_start, tm_end): &(DateTime<Tz>, DateTime<Tz>),
-    ) -> Self
+    ) -> Self::Label
     where
         R: Rng + ?Sized,
         Tz: TimeZone,
     {
-        Self {
+        Label {
             user:      (*id_start..*id_end).fake_with_rng(rng),
             timestamp: (tm_start.timestamp()..tm_end.timestamp()).fake_with_rng(rng),
         }

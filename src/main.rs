@@ -1,7 +1,10 @@
+#![feature(associated_type_defaults)]
+#![feature(type_alias_impl_trait)]
+
 mod cli;
 mod feature_group;
 
-use crate::feature_group::{fraud_detection::*, prelude::*};
+use crate::feature_group::prelude::*;
 use cli::{Opt, Scenario, StructOpt, TypeCommand};
 use rand::prelude::*;
 
@@ -17,26 +20,29 @@ fn main() -> Result<()> {
             let rng = &mut StdRng::seed_from_u64(0);
             let mut csvw = csv::Writer::from_writer(std::io::stdout());
             match scenario {
-                Scenario::fraud_detection => match typecommand {
-                    TypeCommand::Group { group, id_start, limit } => match group.as_ref() {
-                        "account" => fake_feature_group(rng, id_start)
+                Scenario::fraud_detection => {
+                    use crate::feature_group::fraud_detection::*;
+                    match typecommand {
+                        TypeCommand::Group { group, id_start, limit } => match group.as_ref() {
+                            "account" => fake_feature_group(&FakeAccount, rng, id_start)
+                                .take(limit)
+                                .try_for_each(|x: Account| csvw.serialize(x))?,
+                            "transaction_stats" => fake_feature_group(&FakeTransactionStats, rng, id_start)
+                                .take(limit)
+                                .try_for_each(|x| csvw.serialize(x))?,
+                            _ => return Err("group not found".into()),
+                        },
+                        TypeCommand::Label {
+                            id_start,
+                            id_end,
+                            time_start,
+                            time_end,
+                            limit,
+                        } => fake_feature_label(&FakeLabel, rng, &(id_start, id_end), &(time_start, time_end))
                             .take(limit)
-                            .try_for_each(|x: Account| csvw.serialize(x))?,
-                        "transaction_stats" => fake_feature_group(rng, id_start)
-                            .take(limit)
-                            .try_for_each(|x: TransactionStats| csvw.serialize(x))?,
-                        _ => return Err("group not found".into()),
-                    },
-                    TypeCommand::Label {
-                        id_start,
-                        id_end,
-                        time_start,
-                        time_end,
-                        limit,
-                    } => fake_feature_label(rng, &(id_start, id_end), &(time_start, time_end))
-                        .take(limit)
-                        .try_for_each(|x: Label| csvw.serialize(x))?,
-                },
+                            .try_for_each(|x| csvw.serialize(x))?,
+                    }
+                }
             }
         }
     }
