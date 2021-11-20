@@ -7,7 +7,7 @@ use rand::Rng;
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
-pub struct UserAccount {
+pub struct Account {
     user:              usize,
     state:             String,
     credit_score:      u16,
@@ -16,10 +16,10 @@ pub struct UserAccount {
 }
 
 #[derive(Debug, Serialize)]
-pub struct UserTransactionStats {
-    user:                    usize,
-    transaction_account_7d:  u16,
-    transaction_account_30d: u16,
+pub struct TransactionStats {
+    user:                  usize,
+    transaction_count_7d:  u16,
+    transaction_count_30d: u16,
 }
 
 #[derive(Debug, Serialize)]
@@ -28,26 +28,26 @@ pub struct Label {
     timestamp: i64,
 }
 
-impl FakeFeatureGroup for UserAccount {
+impl FakeFeatureGroup for Account {
     fn fake_with_id<R: Rng + ?Sized>(rng: &mut R, id: usize) -> Self {
         Self {
             user:              id,
             state:             StateName().fake_with_rng(rng),
             credit_score:      (500..750).fake_with_rng(rng),
-            account_age_days:  (1..3650).fake_with_rng(rng),
+            account_age_days:  (1..365).fake_with_rng(rng),
             has_2fa_installed: Boolean(50).fake_with_rng(rng),
         }
     }
 }
 
-impl FakeFeatureGroup for UserTransactionStats {
+impl FakeFeatureGroup for TransactionStats {
     fn fake_with_id<R: Rng + ?Sized>(rng: &mut R, id: usize) -> Self {
         let transaction_account_7d = (0..10).fake_with_rng(rng);
         let transaction_account_30d = (transaction_account_7d..50).fake_with_rng(rng);
         Self {
-            user: id,
-            transaction_account_7d,
-            transaction_account_30d,
+            user:                  id,
+            transaction_count_7d:  transaction_account_7d,
+            transaction_count_30d: transaction_account_30d,
         }
     }
 }
