@@ -22,13 +22,13 @@ fn main() -> Result<()> {
             match cmd {
                 TypeCommand::Group {
                     scenario,
-                    group,
+                    name,
                     id_start,
                     limit,
                 } => match scenario {
                     Scenario::FraudDetection => {
                         use crate::feature_group::fraud_detection::*;
-                        match group.as_ref() {
+                        match name.as_ref() {
                             "account" => fake_feature_group(&FakeAccount, rng, id_start)
                                 .take(limit)
                                 .try_for_each(|x: Account| csvw.serialize(x))?,

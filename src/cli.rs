@@ -32,7 +32,7 @@ pub enum TypeCommand {
 
         /// Group name
         #[structopt(name = "group")]
-        group: String,
+        name: String,
 
         #[structopt(long, default_value = "1")]
         id_start: usize,
