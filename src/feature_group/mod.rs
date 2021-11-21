@@ -26,12 +26,12 @@ pub trait FakeFeatureLabel {
 pub fn fake_feature_group<'a, T, R: Rng + ?Sized>(
     ffg: &'a T,
     rng: &'a mut R,
-    id_start: usize,
+    &(id_start, id_end): &'a (usize, usize),
 ) -> impl Iterator<Item = T::Group> + 'a
 where
     T: FakeFeatureGroup,
 {
-    (id_start..).map(|id| ffg.fake(rng, id))
+    (id_start..=id_end).map(|id| ffg.fake(rng, id))
 }
 
 pub fn fake_feature_label<'a, T, R: Rng + ?Sized>(

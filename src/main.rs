@@ -21,16 +21,13 @@ fn main() -> Result<()> {
 
             match cmd {
                 CategoryCmd::Group { group } => match group {
-                    GroupCmd::FraudDetection {
-                        group,
-                        id_range: (id_start, id_end),
-                    } => match group {
-                        FraudDetectionGroup::Account(g) => fake_feature_group(&g, rng, id_start)
-                            .take(id_end - id_start + 1)
-                            .try_for_each(|x| csvw.serialize(x))?,
-                        FraudDetectionGroup::TransactionStats(g) => fake_feature_group(&g, rng, id_start)
-                            .take(id_end - id_start + 1)
-                            .try_for_each(|x| csvw.serialize(x))?,
+                    GroupCmd::FraudDetection { group, id_range } => match group {
+                        FraudDetectionGroup::Account(g) => {
+                            fake_feature_group(&g, rng, &id_range).try_for_each(|x| csvw.serialize(x))?
+                        }
+                        FraudDetectionGroup::TransactionStats(g) => {
+                            fake_feature_group(&g, rng, &id_range).try_for_each(|x| csvw.serialize(x))?
+                        }
                     },
                 },
                 CategoryCmd::Label { label } => match label {

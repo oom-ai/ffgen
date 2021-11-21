@@ -1,12 +1,12 @@
 use chrono::{NaiveDate, NaiveDateTime};
-use std::error::Error;
-
 use structopt::clap::{self, AppSettings};
 use strum::{EnumString, EnumVariantNames, VariantNames};
 
 pub use structopt::StructOpt;
 
 use crate::feature_group::fraud_detection;
+
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 #[derive(StructOpt)]
 #[structopt(
@@ -82,27 +82,22 @@ macro_rules! label_cmd {
     };
 }
 
-fn parse_usize_range(s: &str) -> Result<(usize, usize), Box<dyn Error>> {
-    parse_range(s, |s| Ok(s.parse()?))
+fn parse_usize_range(s: &str) -> Result<(usize, usize)> {
+    parse_range(s, "..", |s| Ok(s.parse()?))
 }
 
-fn parse_datetime_range(s: &str) -> Result<(NaiveDateTime, NaiveDateTime), Box<dyn Error>> {
-    parse_range(s, |s| Ok(parse_datetime(s)?))
+fn parse_datetime_range(s: &str) -> Result<(NaiveDateTime, NaiveDateTime)> {
+    parse_range(s, "..", |s| Ok(parse_datetime(s)?))
 }
 
-fn parse_range<T>(s: &str, parse: fn(&str) -> Result<T, Box<dyn Error>>) -> Result<(T, T), Box<dyn Error>>
-where
-    T: Ord,
-{
-    let pos = s.find("..").ok_or_else(|| format!("no '..' found in '{}'", s))?;
-    let (start, end) = (parse(&s[..pos])?, parse(&s[pos + 2..])?);
-    if end < start {
-        return Err("end < range".into());
+fn parse_range<T: Ord>(s: &str, delimiter: &str, parse: fn(&str) -> Result<T>) -> Result<(T, T)> {
+    match s.find(delimiter) {
+        Some(pos) => Ok((parse(&s[..pos])?, parse(&s[pos + 2..])?)),
+        None => Err(format!("range delimiter '..' not found in '{}'", s).into()),
     }
-    Ok((start, end))
 }
 
-fn parse_datetime(s: &str) -> Result<NaiveDateTime, chrono::ParseError> {
+fn parse_datetime(s: &str) -> std::result::Result<NaiveDateTime, chrono::ParseError> {
     s.parse()
         .or_else(|_| NaiveDateTime::parse_from_str(s, "%Y-%m-%d %H:%M:%S"))
         .or_else(|_| NaiveDate::parse_from_str(s, "%Y-%m-%d").map(|d| d.and_hms(0, 0, 0)))
