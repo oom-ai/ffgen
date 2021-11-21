@@ -3,8 +3,8 @@
 mod cli;
 mod feature_group;
 
-use crate::feature_group::prelude::*;
-use cli::{CategoryCommand, FraudDetectionGroup, GroupCommand, Opt, StructOpt};
+use cli::*;
+use feature_group::prelude::*;
 use rand::prelude::*;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -20,30 +20,29 @@ fn main() -> Result<()> {
             let mut csvw = csv::Writer::from_writer(std::io::stdout());
 
             match cmd {
-                CategoryCommand::Group { group } => match group {
-                    GroupCommand::FraudDetection { group, id_start, limit } => match group {
+                CategoryCmd::Group { group } => match group {
+                    GroupCmd::FraudDetection {
+                        group,
+                        id_range: (id_start, id_end),
+                    } => match group {
                         FraudDetectionGroup::Account(g) => fake_feature_group(&g, rng, id_start)
-                            .take(limit)
+                            .take(id_end - id_start + 1)
                             .try_for_each(|x| csvw.serialize(x))?,
                         FraudDetectionGroup::TransactionStats(g) => fake_feature_group(&g, rng, id_start)
-                            .take(limit)
+                            .take(id_end - id_start + 1)
                             .try_for_each(|x| csvw.serialize(x))?,
                     },
                 },
-                CategoryCommand::Label { label } => match label {
-                    cli::LabelCommand::FraudDetection {
+                CategoryCmd::Label { label } => match label {
+                    LabelCmd::FraudDetection {
                         label,
-                        id_start,
-                        id_end,
-                        time_start,
-                        time_end,
+                        id_range,
+                        time_range,
                         limit,
                     } => match label {
-                        cli::FraudDetectionLabel::Label(l) => {
-                            fake_feature_label(&l, rng, &(id_start, id_end), &(time_start, time_end))
-                                .take(limit)
-                                .try_for_each(|x| csvw.serialize(x))?
-                        }
+                        FraudDetectionLabel::Label(l) => fake_feature_label(&l, rng, &id_range, &time_range)
+                            .take(limit)
+                            .try_for_each(|x| csvw.serialize(x))?,
                     },
                 },
             }

@@ -64,15 +64,14 @@ impl FakeFeatureGroup for FakeTransactionStats {
 
 impl FakeFeatureLabel for FakeLabel {
     type Label = Label;
-    fn fake<R, Tz>(
+    fn fake<R>(
         &self,
         rng: &mut R,
         (id_start, id_end): &(usize, usize),
-        (tm_start, tm_end): &(DateTime<Tz>, DateTime<Tz>),
+        (tm_start, tm_end): &(NaiveDateTime, NaiveDateTime),
     ) -> Self::Label
     where
         R: Rng + ?Sized,
-        Tz: TimeZone,
     {
         Label {
             user:      (*id_start..*id_end).fake_with_rng(rng),

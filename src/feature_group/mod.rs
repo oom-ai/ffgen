@@ -1,14 +1,14 @@
 pub mod fraud_detection;
 
-use chrono::{DateTime, TimeZone};
+use chrono::NaiveDateTime;
 use rand::Rng;
 
 pub mod prelude {
     pub use super::fake_feature_group;
     pub use super::fake_feature_label;
+    pub use super::fraud_detection;
     pub use super::FakeFeatureGroup;
     pub use super::FakeFeatureLabel;
-    pub use super::fraud_detection;
 }
 
 pub trait FakeFeatureGroup {
@@ -18,15 +18,9 @@ pub trait FakeFeatureGroup {
 
 pub trait FakeFeatureLabel {
     type Label;
-    fn fake<R, Tz>(
-        &self,
-        rng: &mut R,
-        id_range: &(usize, usize),
-        tm_range: &(DateTime<Tz>, DateTime<Tz>),
-    ) -> Self::Label
+    fn fake<R>(&self, rng: &mut R, id_range: &(usize, usize), tm_range: &(NaiveDateTime, NaiveDateTime)) -> Self::Label
     where
-        R: Rng + ?Sized,
-        Tz: TimeZone;
+        R: Rng + ?Sized;
 }
 
 pub fn fake_feature_group<'a, T, R: Rng + ?Sized>(
@@ -40,15 +34,14 @@ where
     (id_start..).map(|id| ffg.fake(rng, id))
 }
 
-pub fn fake_feature_label<'a, Tz, T, R: Rng + ?Sized>(
+pub fn fake_feature_label<'a, T, R: Rng + ?Sized>(
     ffl: &'a T,
     rng: &'a mut R,
     id_range: &'a (usize, usize),
-    tm_range: &'a (DateTime<Tz>, DateTime<Tz>),
+    tm_range: &'a (NaiveDateTime, NaiveDateTime),
 ) -> impl Iterator<Item = T::Label> + 'a
 where
     T: FakeFeatureLabel,
-    Tz: TimeZone,
 {
     (0..).map(|_| ffl.fake(rng, id_range, tm_range))
 }

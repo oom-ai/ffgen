@@ -1,4 +1,6 @@
-use chrono::Utc;
+use chrono::{NaiveDate, NaiveDateTime};
+use std::error::Error;
+
 use structopt::clap::{self, AppSettings};
 use strum::{EnumString, EnumVariantNames, VariantNames};
 
@@ -21,65 +23,57 @@ pub enum Opt {
     },
 
     /// Scenario fake data
-    Generate(CategoryCommand),
+    Generate(CategoryCmd),
 }
 
 #[derive(Debug, StructOpt)]
-pub enum CategoryCommand {
+pub enum CategoryCmd {
     /// Feature group data
     Group {
         /// Target group
         #[structopt(subcommand)]
-        group: GroupCommand,
+        group: GroupCmd,
     },
 
     /// Feature label
     Label {
         /// Target label name
         #[structopt(subcommand)]
-        label: LabelCommand,
+        label: LabelCmd,
     },
 }
 
-macro_rules! group_command {
+macro_rules! group_cmd {
     ($($g:ident),* $(,)?) => {
         #[derive(Debug, StructOpt)]
-        pub enum GroupCommand {
+        pub enum GroupCmd {
             $($g {
                 /// Target group name
                 #[structopt(possible_values = <concat_idents!($g, Group)>::VARIANTS , case_insensitive = true)]
                 group: concat_idents!($g, Group),
 
-                #[structopt(long, default_value = "1")]
-                id_start: usize,
-
-                #[structopt(long, default_value = "10")]
-                limit: usize,
+                /// ID range
+                #[structopt(long, default_value = "1..10", parse(try_from_str = parse_usize_range))]
+                id_range: (usize, usize),
             },)*
         }
     };
 }
 
-macro_rules! label_command {
+macro_rules! label_cmd {
     ($($g:ident),* $(,)?) => {
         #[derive(Debug, StructOpt)]
-        pub enum LabelCommand {
+        pub enum LabelCmd {
             $($g {
                 /// Target label name
                 #[structopt(possible_values = <concat_idents!($g, Label)>::VARIANTS, default_value = <concat_idents!($g, Label)>::VARIANTS[0], case_insensitive = true)]
                 label: concat_idents!($g, Label),
 
-                #[structopt(long, default_value = "1")]
-                id_start: usize,
+                #[structopt(long, default_value = "1..10", parse(try_from_str = parse_usize_range))]
+                id_range: (usize, usize),
 
-                #[structopt(long, default_value = "10")]
-                id_end: usize,
-
-                #[structopt(long, default_value = "2021-01-01 00:00:00+00:00")]
-                time_start: chrono::DateTime<Utc>,
-
-                #[structopt(long, default_value = "2021-02-01 00:00:00+00:00")]
-                time_end: chrono::DateTime<Utc>,
+                #[structopt(long, default_value = "2021-01-01..2021-02-01", parse(try_from_str = parse_datetime_range))]
+                time_range: (NaiveDateTime, NaiveDateTime),
 
                 #[structopt(long, default_value = "10")]
                 limit: usize,
@@ -88,9 +82,35 @@ macro_rules! label_command {
     };
 }
 
-group_command!(FraudDetection);
+fn parse_usize_range(s: &str) -> Result<(usize, usize), Box<dyn Error>> {
+    parse_range(s, |s| Ok(s.parse()?))
+}
 
-label_command!(FraudDetection);
+fn parse_datetime_range(s: &str) -> Result<(NaiveDateTime, NaiveDateTime), Box<dyn Error>> {
+    parse_range(s, |s| Ok(parse_datetime(s)?))
+}
+
+fn parse_range<T>(s: &str, parse: fn(&str) -> Result<T, Box<dyn Error>>) -> Result<(T, T), Box<dyn Error>>
+where
+    T: Ord,
+{
+    let pos = s.find("..").ok_or_else(|| format!("no '..' found in '{}'", s))?;
+    let (start, end) = (parse(&s[..pos])?, parse(&s[pos + 2..])?);
+    if end < start {
+        return Err("end < range".into());
+    }
+    Ok((start, end))
+}
+
+fn parse_datetime(s: &str) -> Result<NaiveDateTime, chrono::ParseError> {
+    s.parse()
+        .or_else(|_| NaiveDateTime::parse_from_str(s, "%Y-%m-%d %H:%M:%S"))
+        .or_else(|_| NaiveDate::parse_from_str(s, "%Y-%m-%d").map(|d| d.and_hms(0, 0, 0)))
+}
+
+group_cmd!(FraudDetection);
+
+label_cmd!(FraudDetection);
 
 #[derive(EnumString, EnumVariantNames, Debug)]
 #[strum(serialize_all = "snake_case")]
