@@ -30,8 +30,10 @@ pub struct Label {
 
 #[derive(Debug, Default)]
 pub struct FakeAccount;
+
 #[derive(Debug, Default)]
 pub struct FakeTransactionStats;
+
 #[derive(Debug, Default)]
 pub struct FakeLabel;
 

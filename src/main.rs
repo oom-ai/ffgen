@@ -10,16 +10,16 @@ use rand::prelude::*;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn main() -> Result<()> {
-    let opt: Opt = Opt::from_args();
+    let opt = Opt::from_args();
     match opt {
         Opt::Completion { shell } => {
             Opt::clap().gen_completions_to(env!("CARGO_PKG_NAME"), shell, &mut std::io::stdout());
         }
-        Opt::Generate(cmd) => {
-            let rng = &mut StdRng::seed_from_u64(0);
+        Opt::Generate(GenerateCmd { subcommand, seed }) => {
+            let rng = &mut StdRng::seed_from_u64(seed);
             let mut csvw = csv::Writer::from_writer(std::io::stdout());
 
-            match cmd {
+            match subcommand {
                 CategoryCmd::Group { group } => match group {
                     GroupCmd::FraudDetection { group, id_range } => match group {
                         FraudDetectionGroup::Account(g) => {

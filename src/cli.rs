@@ -8,7 +8,7 @@ use crate::feature_group::fraud_detection;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-#[derive(StructOpt)]
+#[derive(Debug, StructOpt)]
 #[structopt(
     global_settings(&[AppSettings::ColoredHelp]),
     about = env!("CARGO_PKG_DESCRIPTION")
@@ -24,7 +24,18 @@ pub enum Opt {
 
     /// Scenario fake data
     #[structopt(aliases = &["gen"])]
-    Generate(CategoryCmd),
+    Generate(GenerateCmd),
+}
+
+#[derive(Debug, StructOpt)]
+pub struct GenerateCmd {
+    #[structopt(subcommand)]
+    pub subcommand: CategoryCmd,
+
+    // global not works properly: https://github.com/clap-rs/clap/issues/1570
+    // #[structopt(long, global = true)]
+    #[structopt(long, default_value = "0")]
+    pub seed: u64,
 }
 
 #[derive(Debug, StructOpt)]
