@@ -11,20 +11,20 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 #[derive(Debug, StructOpt)]
 #[structopt(
     global_settings(&[AppSettings::ColoredHelp]),
-    about = env!("CARGO_PKG_DESCRIPTION")
-)
-]
+    about = env!("CARGO_PKG_DESCRIPTION"),
+)]
 pub enum Opt {
+    /// Generate fake data
+    #[structopt(display_order = 1, aliases = &["gen"])]
+    Generate(GenerateCmd),
+
     /// Generate shell completion file
+    #[structopt(display_order = 2)]
     Completion {
         /// Target shell name
         #[structopt(possible_values = &clap::Shell::variants())]
         shell: clap::Shell,
     },
-
-    /// Scenario fake data
-    #[structopt(aliases = &["gen"])]
-    Generate(GenerateCmd),
 }
 
 #[derive(Debug, StructOpt)]
@@ -41,13 +41,15 @@ pub struct GenerateCmd {
 #[derive(Debug, StructOpt)]
 pub enum CategoryCmd {
     /// Feature group data
+    #[structopt(display_order = 1)]
     Group {
         /// Target group
         #[structopt(subcommand)]
         group: GroupCmd,
     },
 
-    /// Feature label
+    /// Feature label data
+    #[structopt(display_order = 2)]
     Label {
         /// Target label name
         #[structopt(subcommand)]
