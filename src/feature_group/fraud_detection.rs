@@ -28,8 +28,11 @@ pub struct Label {
     timestamp: i64,
 }
 
+#[derive(Debug, Default)]
 pub struct FakeAccount;
+#[derive(Debug, Default)]
 pub struct FakeTransactionStats;
+#[derive(Debug, Default)]
 pub struct FakeLabel;
 
 impl FakeFeatureGroup for FakeAccount {
