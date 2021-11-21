@@ -23,6 +23,7 @@ pub enum Opt {
     },
 
     /// Scenario fake data
+    #[structopt(aliases = &["gen"])]
     Generate(CategoryCmd),
 }
 
