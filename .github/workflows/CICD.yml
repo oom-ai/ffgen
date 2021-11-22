@@ -22,7 +22,6 @@ jobs:
           - { os: ubuntu-latest  , target: i686-unknown-linux-musl     , use-cross: use-cross }
           - { os: ubuntu-latest  , target: x86_64-unknown-linux-gnu    , use-cross: use-cross }
           - { os: ubuntu-latest  , target: x86_64-unknown-linux-musl   , use-cross: use-cross }
-          - { os: ubuntu-latest  , target: x86_64-unknown-linux-gnu    , use-cross: use-cross }
           - { os: macos-latest   , target: x86_64-apple-darwin                                }
           # - { os: windows-latest , target: i686-pc-windows-msvc                               }
           - { os: windows-latest , target: x86_64-pc-windows-msvc                             }
@@ -40,14 +39,6 @@ jobs:
       id: vars
       shell: bash
       run: |
-        # toolchain
-        TOOLCHAIN="nightly" ## default toolchain
-        # * specify alternate TOOLCHAIN for *-pc-windows-gnu targets; gnu targets on Windows are broken for the standard *-pc-windows-msvc toolchain (refs: <https://github.com/rust-lang/rust/issues/47048>, <https://github.com/rust-lang/rust/issues/53454>, <https://github.com/rust-lang/cargo/issues/6754>)
-        case ${{ matrix.job.target }} in *-pc-windows-gnu) TOOLCHAIN="nightly-${{ matrix.job.target }}" ;; esac;
-        # * use requested TOOLCHAIN if specified
-        if [ -n "${{ matrix.job.toolchain }}" ]; then TOOLCHAIN="${{ matrix.job.toolchain }}" ; fi
-        echo set-output name=TOOLCHAIN::${TOOLCHAIN}
-        echo ::set-output name=TOOLCHAIN::${TOOLCHAIN}
         # staging directory
         STAGING='_staging'
         echo set-output name=STAGING::${STAGING}
@@ -143,16 +134,11 @@ jobs:
         mkdir -p '${{ steps.vars.outputs.STAGING }}/${{ steps.vars.outputs.PKG_BASENAME }}'
         mkdir -p '${{ steps.vars.outputs.STAGING }}/${{ steps.vars.outputs.PKG_BASENAME }}/completions'
         mkdir -p '${{ steps.vars.outputs.STAGING }}/dpkg'
-
-    - name: Info
-      shell: bash
-      run: |
-        gcc --version || true
-        rustup -V
-        rustup toolchain list
-        rustup default
-        cargo -V
-        rustc -V
+    - name: Setup toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        override: true
     - name: Build
       uses: actions-rs/cargo@v1
       with:
@@ -170,7 +156,7 @@ jobs:
       with:
         use-cross: ${{ steps.vars.outputs.CARGO_USE_CROSS }}
         command: run
-        args: Cargo.toml
+        args: gen group
     - name: Strip binary
       shell: bash
       run: |
