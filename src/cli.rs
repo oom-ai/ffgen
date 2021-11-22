@@ -70,7 +70,7 @@ fn parse_usize_range(s: &str) -> Result<(usize, usize)> {
 }
 
 fn parse_datetime_range(s: &str) -> Result<(NaiveDateTime, NaiveDateTime)> {
-    parse_range(s, "..", |s| Ok(parse_datetime(s)?))
+    parse_range(s, "..", parse_datetime)
 }
 
 fn parse_range<T: Ord>(s: &str, delimiter: &str, parse: fn(&str) -> Result<T>) -> Result<(T, T)> {
@@ -80,10 +80,12 @@ fn parse_range<T: Ord>(s: &str, delimiter: &str, parse: fn(&str) -> Result<T>) -
     }
 }
 
-fn parse_datetime(s: &str) -> std::result::Result<NaiveDateTime, chrono::ParseError> {
+fn parse_datetime(s: &str) -> Result<NaiveDateTime> {
     s.parse()
         .or_else(|_| NaiveDateTime::parse_from_str(s, "%Y-%m-%d %H:%M:%S"))
         .or_else(|_| NaiveDate::parse_from_str(s, "%Y-%m-%d").map(|d| d.and_hms(0, 0, 0)))
+        .map_err(Box::new)
+        .or_else(|_| Ok(NaiveDateTime::from_timestamp(s.parse::<i64>()?, 0)))
 }
 
 #[derive(EnumString, EnumVariantNames, Debug)]
@@ -96,6 +98,5 @@ pub enum Group {
 #[derive(EnumString, EnumVariantNames, Debug)]
 #[strum(serialize_all = "snake_case")]
 pub enum Label {
-    #[strum(serialize = "frauddetection:label")]
     FraudDetectionLabel,
 }
