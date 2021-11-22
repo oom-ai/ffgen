@@ -4,21 +4,18 @@ mod cli;
 mod feature_group;
 
 use clap::{IntoApp, Parser};
-use clap_generate::Generator;
 use cli::*;
 use feature_group::prelude::*;
 use rand::prelude::*;
+use std::io;
 
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-
-fn main() -> Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opt = Opt::parse();
     match opt {
-        Opt::Completion { shell } => shell.generate(&Opt::into_app(), &mut std::io::stdout()),
         Opt::Generate(GenerateCmd { subcommand, seed }) => {
             let seed = seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
             let rng = &mut StdRng::seed_from_u64(seed);
-            let mut csv_writer = csv::Writer::from_writer(std::io::stdout());
+            let mut csv_writer = csv::Writer::from_writer(io::stdout());
 
             match subcommand {
                 CategoryCmd::Group { group, id_range } => {
@@ -54,6 +51,10 @@ fn main() -> Result<()> {
                     }
                 }
             }
+        }
+        Opt::Completion { shell } => {
+            let app = &mut Opt::into_app();
+            clap_generate::generate(shell, app, app.get_name().to_string(), &mut io::stdout())
         }
     }
     Ok(())
