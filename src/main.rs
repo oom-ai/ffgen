@@ -20,36 +20,39 @@ fn main() -> Result<()> {
             let rng = &mut StdRng::seed_from_u64(seed);
             let mut csv_writer = csv::Writer::from_writer(std::io::stdout());
 
-            macro_rules! ffg {
-                ($t:ty, $id_range:expr) => {
-                    fake_feature_group(rng, $id_range).try_for_each(|x: $t| csv_writer.serialize(x))?
-                };
-            }
-            macro_rules! ffl {
-                ($t:ty, $id_range:expr, $tm_range:expr, $limit:expr) => {
-                    fake_feature_label(rng, $id_range, $tm_range)
-                        .take($limit)
-                        .try_for_each(|x: $t| csv_writer.serialize(x))?
-                };
-            }
-
             match subcommand {
-                CategoryCmd::Group { group } => match group {
-                    GroupCmd::FraudDetection { group, id_range } => match group {
-                        FraudDetectionGroup::Account => ffg!(fraud_detection::Account, &id_range),
-                        FraudDetectionGroup::TransactionStats => ffg!(fraud_detection::TransactionStats, &id_range),
-                    },
-                },
-                CategoryCmd::Label { label } => match label {
-                    LabelCmd::FraudDetection {
-                        label,
-                        id_range,
-                        time_range,
-                        limit,
-                    } => match label {
-                        FraudDetectionLabel::Label => ffl!(fraud_detection::Label, &id_range, &time_range, limit),
-                    },
-                },
+                CategoryCmd::Group { group, id_range } => {
+                    macro_rules! ffg {
+                        ($($p:pat => $t:ty),+ $(,)?) => {
+                            match group {
+                                $($p => fake_feature_group(rng, &id_range).try_for_each(|x: $t| csv_writer.serialize(x))?,)*
+                            }
+                        }
+                    }
+                    ffg! {
+                        Group::FraudDetectionAccount => fraud_detection::Account,
+                        Group::FraudDetectionTransactionStats => fraud_detection::TransactionStats
+                    }
+                }
+                CategoryCmd::Label {
+                    label,
+                    id_range,
+                    time_range,
+                    limit,
+                } => {
+                    macro_rules! ffl {
+                        ($($p:pat => $t:ty),+ $(,)?) => {
+                            match label {
+                                $($p => fake_feature_label(rng, &id_range, &time_range)
+                                 .take(limit)
+                                 .try_for_each(|x: $t| csv_writer.serialize(x))?)*
+                            }
+                        }
+                    }
+                    ffl! {
+                        Label::FraudDetectionLabel => fraud_detection::Label,
+                    }
+                }
             }
         }
     }
