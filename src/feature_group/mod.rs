@@ -6,42 +6,37 @@ use rand::Rng;
 pub mod prelude {
     pub use super::fake_feature_group;
     pub use super::fake_feature_label;
-    pub use super::fraud_detection;
     pub use super::FakeFeatureGroup;
     pub use super::FakeFeatureLabel;
-}
 
-pub trait FakeFeatureGroup {
-    type Group;
-    fn fake<R: Rng + ?Sized>(&self, rng: &mut R, id: usize) -> Self::Group;
+    pub use super::fraud_detection;
 }
 
 pub trait FakeFeatureLabel {
-    type Label;
-    fn fake<R>(&self, rng: &mut R, id_range: &(usize, usize), tm_range: &(NaiveDateTime, NaiveDateTime)) -> Self::Label
-    where
-        R: Rng + ?Sized;
+    fn fake<R: Rng + ?Sized>(rng: &mut R, id_range: &(usize, usize), tm_range: &(NaiveDateTime, NaiveDateTime))
+        -> Self;
 }
-
-pub fn fake_feature_group<'a, T, R: Rng + ?Sized>(
-    ffg: &'a T,
-    rng: &'a mut R,
-    &(id_start, id_end): &'a (usize, usize),
-) -> impl Iterator<Item = T::Group> + 'a
-where
-    T: FakeFeatureGroup,
-{
-    (id_start..=id_end).map(|id| ffg.fake(rng, id))
+pub trait FakeFeatureGroup {
+    fn fake<R: Rng + ?Sized>(rng: &mut R, id: usize) -> Self;
 }
 
 pub fn fake_feature_label<'a, T, R: Rng + ?Sized>(
-    ffl: &'a T,
     rng: &'a mut R,
     id_range: &'a (usize, usize),
     tm_range: &'a (NaiveDateTime, NaiveDateTime),
-) -> impl Iterator<Item = T::Label> + 'a
+) -> impl Iterator<Item = T> + 'a
 where
     T: FakeFeatureLabel,
 {
-    (0..).map(|_| ffl.fake(rng, id_range, tm_range))
+    (0..).map(|_| T::fake(rng, id_range, tm_range))
+}
+
+pub fn fake_feature_group<'a, T, R: Rng + ?Sized>(
+    rng: &'a mut R,
+    &(id_start, id_end): &'a (usize, usize),
+) -> impl Iterator<Item = T> + 'a
+where
+    T: FakeFeatureGroup,
+{
+    (id_start..=id_end).map(|id| T::fake(rng, id))
 }

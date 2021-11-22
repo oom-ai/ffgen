@@ -3,8 +3,6 @@ use clap::{self, crate_authors, crate_description, crate_version, Parser};
 use clap_generate::Shell;
 use strum::{EnumString, EnumVariantNames, VariantNames};
 
-use crate::feature_group::fraud_detection;
-
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync + 'static>>;
 
 #[derive(Debug, Parser)]
@@ -122,12 +120,12 @@ label_cmd!(FraudDetection);
 #[derive(EnumString, EnumVariantNames, Debug)]
 #[strum(serialize_all = "snake_case")]
 pub enum FraudDetectionGroup {
-    Account(fraud_detection::FakeAccount),
-    TransactionStats(fraud_detection::FakeTransactionStats),
+    Account,
+    TransactionStats,
 }
 
 #[derive(EnumString, EnumVariantNames, Debug)]
 #[strum(serialize_all = "snake_case")]
 pub enum FraudDetectionLabel {
-    Label(fraud_detection::FakeLabel),
+    Label,
 }

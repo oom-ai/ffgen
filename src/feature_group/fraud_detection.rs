@@ -28,18 +28,8 @@ pub struct Label {
     timestamp: i64,
 }
 
-#[derive(Debug, Default)]
-pub struct FakeAccount;
-
-#[derive(Debug, Default)]
-pub struct FakeTransactionStats;
-
-#[derive(Debug, Default)]
-pub struct FakeLabel;
-
-impl FakeFeatureGroup for FakeAccount {
-    type Group = Account;
-    fn fake<R: Rng + ?Sized>(&self, rng: &mut R, id: usize) -> Self::Group {
+impl FakeFeatureGroup for Account {
+    fn fake<R: Rng + ?Sized>(rng: &mut R, id: usize) -> Self {
         Account {
             user:              id,
             state:             StateName().fake_with_rng(rng),
@@ -50,10 +40,8 @@ impl FakeFeatureGroup for FakeAccount {
     }
 }
 
-impl FakeFeatureGroup for FakeTransactionStats {
-    type Group = TransactionStats;
-
-    fn fake<R: Rng + ?Sized>(&self, rng: &mut R, id: usize) -> Self::Group {
+impl FakeFeatureGroup for TransactionStats {
+    fn fake<R: Rng + ?Sized>(rng: &mut R, id: usize) -> Self {
         let transaction_account_7d = (0..10).fake_with_rng(rng);
         let transaction_account_30d = (transaction_account_7d..50).fake_with_rng(rng);
         TransactionStats {
@@ -64,14 +52,12 @@ impl FakeFeatureGroup for FakeTransactionStats {
     }
 }
 
-impl FakeFeatureLabel for FakeLabel {
-    type Label = Label;
+impl FakeFeatureLabel for Label {
     fn fake<R>(
-        &self,
         rng: &mut R,
         (id_start, id_end): &(usize, usize),
         (tm_start, tm_end): &(NaiveDateTime, NaiveDateTime),
-    ) -> Self::Label
+    ) -> Self
     where
         R: Rng + ?Sized,
     {
