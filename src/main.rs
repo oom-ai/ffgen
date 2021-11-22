@@ -16,6 +16,7 @@ fn main() -> Result<()> {
     match opt {
         Opt::Completion { shell } => shell.generate(&mut Opt::into_app(), &mut std::io::stdout()),
         Opt::Generate(GenerateCmd { subcommand, seed }) => {
+            let seed = seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
             let rng = &mut StdRng::seed_from_u64(seed);
             let mut csvw = csv::Writer::from_writer(std::io::stdout());
 

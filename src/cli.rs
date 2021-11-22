@@ -32,8 +32,8 @@ pub struct GenerateCmd {
     #[clap(subcommand)]
     pub subcommand: CategoryCmd,
 
-    #[clap(long, default_value = "0", global = true)]
-    pub seed: u64,
+    #[clap(long, global = true)]
+    pub seed: Option<u64>,
 }
 
 #[derive(Debug, Parser)]
