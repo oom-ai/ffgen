@@ -1,5 +1,5 @@
 use chrono::{NaiveDate, NaiveDateTime};
-use clap::{self, crate_authors, crate_description, crate_version, Parser, ValueHint};
+use clap::{self, crate_authors, crate_description, crate_version, Parser};
 use clap_generate::Shell;
 use strum::{EnumString, EnumVariantNames, VariantNames};
 
@@ -40,7 +40,7 @@ pub enum CategoryCmd {
     #[clap(display_order = 1)]
     Group {
         /// Target group
-        #[clap(name = "group", possible_values = Group::VARIANTS, value_hint = ValueHint::CommandString)]
+        #[clap(name = "group", possible_values = Group::VARIANTS, default_value = Group::VARIANTS[0])]
         group:    Group,
         /// ID range
         #[clap(long, short = 'I', default_value = "1..10", parse(try_from_str = parse_usize_range))]
@@ -51,7 +51,7 @@ pub enum CategoryCmd {
     #[clap(display_order = 2)]
     Label {
         /// Target label name
-        #[clap(name = "label", possible_values = Label::VARIANTS)]
+        #[clap(name = "label", possible_values = Label::VARIANTS, default_value = Label::VARIANTS[0])]
         label: Label,
 
         #[clap(long, short = 'I', default_value = "1..10", parse(try_from_str = parse_usize_range))]

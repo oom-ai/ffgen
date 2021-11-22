@@ -51,7 +51,7 @@ _arguments "${_arguments_options[@]}" \
 '--version[Print version information]' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-':group -- Target group:(fraud_detection_account fraud_detection_transaction_stats)' \
+'::group -- Target group:(fraud_detection_account fraud_detection_transaction_stats)' \
 && ret=0
 ;;
 (label)
@@ -66,7 +66,7 @@ _arguments "${_arguments_options[@]}" \
 '--version[Print version information]' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-':label -- Target label name:(fraud_detection_label)' \
+'::label -- Target label name:(fraud_detection_label)' \
 && ret=0
 ;;
 (help)
