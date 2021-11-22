@@ -1,73 +1,71 @@
 use chrono::{NaiveDate, NaiveDateTime};
-use structopt::clap::{self, AppSettings};
+use clap::{self, crate_authors, crate_description, crate_version, Parser};
+use clap_generate::Shell;
 use strum::{EnumString, EnumVariantNames, VariantNames};
-
-pub use structopt::StructOpt;
 
 use crate::feature_group::fraud_detection;
 
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync + 'static>>;
 
-#[derive(Debug, StructOpt)]
-#[structopt(
-    global_settings(&[AppSettings::ColoredHelp]),
-    about = env!("CARGO_PKG_DESCRIPTION"),
+#[derive(Debug, Parser)]
+#[clap(
+    about = crate_description!(),
+    version = crate_version!(),
+    author = crate_authors!(),
 )]
 pub enum Opt {
     /// Generate fake data
-    #[structopt(display_order = 1, aliases = &["gen"])]
+    #[clap(display_order = 1, aliases = &["gen"])]
     Generate(GenerateCmd),
 
     /// Generate shell completion file
-    #[structopt(display_order = 2)]
+    #[clap(display_order = 2)]
     Completion {
         /// Target shell name
-        #[structopt(possible_values = &clap::Shell::variants())]
-        shell: clap::Shell,
+        #[clap(arg_enum)]
+        shell: Shell,
     },
 }
 
-#[derive(Debug, StructOpt)]
+#[derive(Debug, Parser)]
 pub struct GenerateCmd {
-    #[structopt(subcommand)]
+    #[clap(subcommand)]
     pub subcommand: CategoryCmd,
 
-    // global not works properly: https://github.com/clap-rs/clap/issues/1570
-    // #[structopt(long, global = true)]
-    #[structopt(long, default_value = "0")]
+    #[clap(long, default_value = "0", global = true)]
     pub seed: u64,
 }
 
-#[derive(Debug, StructOpt)]
+#[derive(Debug, Parser)]
 pub enum CategoryCmd {
     /// Feature group data
-    #[structopt(display_order = 1)]
+    #[clap(display_order = 1)]
     Group {
         /// Target group
-        #[structopt(subcommand)]
+        #[clap(subcommand)]
         group: GroupCmd,
     },
 
     /// Feature label data
-    #[structopt(display_order = 2)]
+    #[clap(display_order = 2)]
     Label {
         /// Target label name
-        #[structopt(subcommand)]
+        #[clap(subcommand)]
         label: LabelCmd,
     },
 }
 
 macro_rules! group_cmd {
     ($($g:ident),* $(,)?) => {
-        #[derive(Debug, StructOpt)]
+        #[derive(Debug, Parser)]
         pub enum GroupCmd {
             $($g {
                 /// Target group name
-                #[structopt(possible_values = <concat_idents!($g, Group)>::VARIANTS , case_insensitive = true)]
+                #[clap(possible_values = <concat_idents!($g, Group)>::VARIANTS , case_insensitive = true)]
                 group: concat_idents!($g, Group),
 
                 /// ID range
-                #[structopt(long, default_value = "1..10", parse(try_from_str = parse_usize_range))]
+                #[clap(long, default_value = "1..10", parse(try_from_str = parse_usize_range))]
                 id_range: (usize, usize),
             },)*
         }
@@ -76,20 +74,20 @@ macro_rules! group_cmd {
 
 macro_rules! label_cmd {
     ($($g:ident),* $(,)?) => {
-        #[derive(Debug, StructOpt)]
+        #[derive(Debug, Parser)]
         pub enum LabelCmd {
             $($g {
                 /// Target label name
-                #[structopt(possible_values = <concat_idents!($g, Label)>::VARIANTS, default_value = <concat_idents!($g, Label)>::VARIANTS[0], case_insensitive = true)]
+                #[clap(possible_values = <concat_idents!($g, Label)>::VARIANTS, default_value = <concat_idents!($g, Label)>::VARIANTS[0], case_insensitive = true)]
                 label: concat_idents!($g, Label),
 
-                #[structopt(long, default_value = "1..10", parse(try_from_str = parse_usize_range))]
+                #[clap(long, default_value = "1..10", parse(try_from_str = parse_usize_range))]
                 id_range: (usize, usize),
 
-                #[structopt(long, default_value = "2021-01-01..2021-02-01", parse(try_from_str = parse_datetime_range))]
+                #[clap(long, default_value = "2021-01-01..2021-02-01", parse(try_from_str = parse_datetime_range))]
                 time_range: (NaiveDateTime, NaiveDateTime),
 
-                #[structopt(long, default_value = "10")]
+                #[clap(long, default_value = "10")]
                 limit: usize,
             },)*
         }

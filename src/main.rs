@@ -3,6 +3,8 @@
 mod cli;
 mod feature_group;
 
+use clap::{IntoApp, Parser};
+use clap_generate::Generator;
 use cli::*;
 use feature_group::prelude::*;
 use rand::prelude::*;
@@ -10,11 +12,9 @@ use rand::prelude::*;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn main() -> Result<()> {
-    let opt = Opt::from_args();
+    let opt = Opt::parse();
     match opt {
-        Opt::Completion { shell } => {
-            Opt::clap().gen_completions_to(env!("CARGO_PKG_NAME"), shell, &mut std::io::stdout());
-        }
+        Opt::Completion { shell } => shell.generate(&mut Opt::into_app(), &mut std::io::stdout()),
         Opt::Generate(GenerateCmd { subcommand, seed }) => {
             let rng = &mut StdRng::seed_from_u64(seed);
             let mut csvw = csv::Writer::from_writer(std::io::stdout());
