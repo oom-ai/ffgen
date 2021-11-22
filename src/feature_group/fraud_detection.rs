@@ -62,8 +62,8 @@ impl FakeFeatureLabel for Label {
         R: Rng + ?Sized,
     {
         Label {
-            user:      (*id_start..*id_end).fake_with_rng(rng),
-            timestamp: (tm_start.timestamp()..tm_end.timestamp()).fake_with_rng(rng),
+            user:      (*id_start..=*id_end).fake_with_rng(rng),
+            timestamp: (tm_start.timestamp()..=tm_end.timestamp()).fake_with_rng(rng),
         }
     }
 }
