@@ -24,6 +24,9 @@ _ffgen() {
             label)
                 cmd+="__label"
                 ;;
+            list)
+                cmd+="__list"
+                ;;
             *)
                 ;;
         esac
@@ -31,16 +34,12 @@ _ffgen() {
 
     case "${cmd}" in
         ffgen)
-            opts="-h -V --help --version --seed group label completion help"
+            opts="-h -V --help --version group label list completion help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --seed)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -49,16 +48,12 @@ _ffgen() {
             return 0
             ;;
         ffgen__completion)
-            opts="-h --help --seed bash elvish fish powershell zsh"
+            opts="-h --help bash elvish fish powershell zsh"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --seed)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -67,7 +62,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__group)
-            opts="-I -h --id-range --help --seed fraud_detection_account fraud_detection_transaction_stats"
+            opts="-I -h --id-range --seed --help fraud_detection_account fraud_detection_transaction_stats"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -93,16 +88,12 @@ _ffgen() {
             return 0
             ;;
         ffgen__help)
-            opts="-h --help --seed"
+            opts="-h --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --seed)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -111,7 +102,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__label)
-            opts="-I -T -l -h --id-range --time-range --limit --help --seed fraud_detection_label"
+            opts="-I -T -l -h --id-range --time-range --limit --seed --help fraud_detection_label"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -145,6 +136,20 @@ _ffgen() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        ffgen__list)
+            opts="-h --help group label"
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
                 *)
                     COMPREPLY=()
                     ;;

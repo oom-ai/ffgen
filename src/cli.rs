@@ -11,16 +11,7 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync 
     version = crate_version!(),
     author = crate_authors!(),
 )]
-pub struct Opt {
-    #[clap(subcommand)]
-    pub subcommand: Subcommand,
-
-    #[clap(long, global = true)]
-    pub seed: Option<u64>,
-}
-
-#[derive(Debug, Parser)]
-pub enum Subcommand {
+pub enum Opt {
     /// Generate feature group data
     #[clap(display_order = 1)]
     Group {
@@ -31,6 +22,10 @@ pub enum Subcommand {
         /// ID range
         #[clap(long, short = 'I', default_value = "1..10", parse(try_from_str = parse_usize_range))]
         id_range: (usize, usize),
+
+        /// Seed for random generator
+        #[clap(long, global = true)]
+        seed: Option<u64>,
     },
 
     /// Generate feature label data
@@ -51,6 +46,18 @@ pub enum Subcommand {
         /// Max entries to generate
         #[clap(long, short, default_value = "10")]
         limit: usize,
+
+        /// Seed for random generator
+        #[clap(long, global = true)]
+        seed: Option<u64>,
+    },
+
+    /// List available schema
+    #[clap(display_order = 3)]
+    List {
+        /// Schema category
+        #[clap(possible_values = Category::VARIANTS, display_order = 3)]
+        category: Category,
     },
 
     /// Generate shell completion file
@@ -59,6 +66,13 @@ pub enum Subcommand {
         #[clap(arg_enum)]
         shell: Shell,
     },
+}
+
+#[derive(EnumString, EnumVariantNames, Debug)]
+#[strum(serialize_all = "snake_case")]
+pub enum Category {
+    Group,
+    Label,
 }
 
 fn parse_usize_range(s: &str) -> Result<(usize, usize)> {

@@ -6,15 +6,16 @@ use cli::*;
 use feature_group::prelude::*;
 use rand::prelude::*;
 use std::io;
+use strum::VariantNames;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opt = Opt::parse();
-    let seed = opt.seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
-    let rng = &mut StdRng::seed_from_u64(seed);
     let mut csv_writer = csv::Writer::from_writer(io::stdout());
 
-    match opt.subcommand {
-        Subcommand::Group { group, id_range } => {
+    match opt {
+        Opt::Group { group, id_range, seed } => {
+            let seed = seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
+            let rng = &mut StdRng::seed_from_u64(seed);
             macro_rules! ffg {
                 ($($p:pat => $t:ty),+ $(,)?) => {
                     match group {
@@ -30,12 +31,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Group::FraudDetectionTransactionStats => fraud_detection::TransactionStats
             }
         }
-        Subcommand::Label {
+        Opt::Label {
             label,
             id_range,
             time_range,
             limit,
+            seed,
         } => {
+            let seed = seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
+            let rng = &mut StdRng::seed_from_u64(seed);
             macro_rules! ffl {
                 ($($p:pat => $t:ty),+ $(,)?) => {
                     match label {
@@ -51,7 +55,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Label::FraudDetectionLabel => fraud_detection::Label,
             }
         }
-        Subcommand::Completion { shell } => {
+        Opt::List { category } => match category {
+            Category::Group => Group::VARIANTS.iter().for_each(|x| println!("{}", x)),
+            Category::Label => Label::VARIANTS.iter().for_each(|x| println!("{}", x)),
+        },
+        Opt::Completion { shell } => {
             let app = &mut Opt::into_app();
             clap_generate::generate(shell, app, app.get_name().to_string(), &mut io::stdout())
         }

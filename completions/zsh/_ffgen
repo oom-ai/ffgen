@@ -15,7 +15,6 @@ _ffgen() {
 
     local context curcontext="$curcontext" state line
     _arguments "${_arguments_options[@]}" \
-'--seed=[]:SEED: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 '-V[Print version information]' \
@@ -33,7 +32,7 @@ _ffgen() {
 _arguments "${_arguments_options[@]}" \
 '-I+[ID range]:ID_RANGE: ' \
 '--id-range=[ID range]:ID_RANGE: ' \
-'--seed=[]:SEED: ' \
+'--seed=[Seed for random generator]:SEED: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 '::group -- Target group name:(fraud_detection_account fraud_detection_transaction_stats)' \
@@ -47,15 +46,21 @@ _arguments "${_arguments_options[@]}" \
 '--time-range=[Label time range]:TIME_RANGE: ' \
 '-l+[Max entries to generate]:LIMIT: ' \
 '--limit=[Max entries to generate]:LIMIT: ' \
-'--seed=[]:SEED: ' \
+'--seed=[Seed for random generator]:SEED: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 '::label -- Target label name:(fraud_detection_label)' \
 && ret=0
 ;;
+(list)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':category -- Schema category:(group label)' \
+&& ret=0
+;;
 (completion)
 _arguments "${_arguments_options[@]}" \
-'--seed=[]:SEED: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':shell -- Target shell name:(bash elvish fish powershell zsh)' \
@@ -63,7 +68,6 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (help)
 _arguments "${_arguments_options[@]}" \
-'--seed=[]:SEED: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 && ret=0
@@ -78,6 +82,7 @@ _ffgen_commands() {
     local commands; commands=(
 'group:Generate feature group data' \
 'label:Generate feature label data' \
+'list:List available schema' \
 'completion:Generate shell completion file' \
 'help:Print this message or the help of the given subcommand(s)' \
     )
@@ -102,6 +107,11 @@ _ffgen__help_commands() {
 _ffgen__label_commands() {
     local commands; commands=()
     _describe -t commands 'ffgen label commands' commands "$@"
+}
+(( $+functions[_ffgen__list_commands] )) ||
+_ffgen__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'ffgen list commands' commands "$@"
 }
 
 _ffgen "$@"

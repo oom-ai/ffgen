@@ -18,20 +18,20 @@ set edit:completion:arg-completer[ffgen] = [@words]{
     }
     var completions = [
         &'ffgen'= {
-            cand --seed 'seed'
             cand -h 'Print help information'
             cand --help 'Print help information'
             cand -V 'Print version information'
             cand --version 'Print version information'
             cand group 'Generate feature group data'
             cand label 'Generate feature label data'
+            cand list 'List available schema'
             cand completion 'Generate shell completion file'
             cand help 'Print this message or the help of the given subcommand(s)'
         }
         &'ffgen;group'= {
             cand -I 'ID range'
             cand --id-range 'ID range'
-            cand --seed 'seed'
+            cand --seed 'Seed for random generator'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
@@ -42,17 +42,19 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --time-range 'Label time range'
             cand -l 'Max entries to generate'
             cand --limit 'Max entries to generate'
-            cand --seed 'seed'
+            cand --seed 'Seed for random generator'
+            cand -h 'Print help information'
+            cand --help 'Print help information'
+        }
+        &'ffgen;list'= {
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
         &'ffgen;completion'= {
-            cand --seed 'seed'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
         &'ffgen;help'= {
-            cand --seed 'seed'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
