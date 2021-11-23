@@ -5,6 +5,12 @@ A fast **f**ake **f**eature **gen**erator
 ## Example
 
 ```
+$ ffgen list group
+fraud_detection_account
+fraud_detection_transaction_stats
+```
+
+```
 $ ffgen group fraud_detection_account --id-range 1..10 | csview
 +------+----------------+--------------+------------------+-------------------+
 | user | state          | credit_score | account_age_days | has_2fa_installed |
