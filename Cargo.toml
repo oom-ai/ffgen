@@ -1,14 +1,14 @@
 [package]
-name = "fake-feature"
+name = "ffgen"
 version = "0.1.0"
 edition = "2021"
 authors = ["Wenxuan Zhang <wenxuangm@gmail.com>"]
 categories = ["command-line-utilities"]
-description = "A cli tool to generate fake data for feature store"
+description = "A fast fake feature generator"
 license = "MIT/Apache-2.0"
 exclude = ["/completions"]
-repository = "https://github.com/wfxr/fake-feature"
-homepage = "https://github.com/wfxr/fake-feature"
+repository = "https://github.com/wfxr/ffgen"
+homepage = "https://github.com/wfxr/ffgen"
 
 build = "build.rs"
 
