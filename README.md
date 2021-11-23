@@ -27,3 +27,9 @@ $ ffgen group fraud_detection_account --id-range 1..10 | csview
 | 10   | Minnesota      | 731          | 330              | true              |
 +------+----------------+--------------+------------------+-------------------+
 ```
+
+## Installation
+
+Pre-built versions of `ffgen` for various architectures are available at [Github release page](https://github.com/oom-ai/ffgen/releases).
+
+*Note that you can try the `musl` version (which is statically-linked) if runs into dependency related errors.*
