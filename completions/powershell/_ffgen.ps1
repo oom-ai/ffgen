@@ -20,13 +20,13 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
 
     $completions = @(switch ($command) {
         'ffgen' {
+            [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('-V', 'V', [CompletionResultType]::ParameterName, 'Print version information')
             [CompletionResult]::new('--version', 'version', [CompletionResultType]::ParameterName, 'Print version information')
             [CompletionResult]::new('group', 'group', [CompletionResultType]::ParameterValue, 'Generate feature group data')
             [CompletionResult]::new('label', 'label', [CompletionResultType]::ParameterValue, 'Generate feature label data')
-            [CompletionResult]::new('list', 'list', [CompletionResultType]::ParameterValue, 'List available schema')
             [CompletionResult]::new('completion', 'completion', [CompletionResultType]::ParameterValue, 'Generate shell completion file')
             [CompletionResult]::new('help', 'help', [CompletionResultType]::ParameterValue, 'Print this message or the help of the given subcommand(s)')
             break
@@ -34,7 +34,8 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
         'ffgen;group' {
             [CompletionResult]::new('-I', 'I', [CompletionResultType]::ParameterName, 'ID range')
             [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'ID range')
-            [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for random generator')
+            [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
+            [CompletionResult]::new('--list', 'list', [CompletionResultType]::ParameterName, 'List available groups')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
@@ -44,24 +45,21 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
             [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'Label id range')
             [CompletionResult]::new('-T', 'T', [CompletionResultType]::ParameterName, 'Label time range')
             [CompletionResult]::new('--time-range', 'time-range', [CompletionResultType]::ParameterName, 'Label time range')
-            [CompletionResult]::new('-l', 'l', [CompletionResultType]::ParameterName, 'Max entries to generate')
             [CompletionResult]::new('--limit', 'limit', [CompletionResultType]::ParameterName, 'Max entries to generate')
-            [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for random generator')
-            [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
-            [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
-            break
-        }
-        'ffgen;list' {
+            [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
+            [CompletionResult]::new('--list', 'list', [CompletionResultType]::ParameterName, 'List available labels')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
         }
         'ffgen;completion' {
+            [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
         }
         'ffgen;help' {
+            [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
