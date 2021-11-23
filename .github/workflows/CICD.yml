@@ -4,7 +4,7 @@ env:
   PROJECT_NAME: ffgen
   PROJECT_DESC: A fast fake feature generator
   PROJECT_MAINTAINER: Wenxuan Zhang <wenxuangm@gmail.com>
-  PROJECT_HOMEPAGE: https://github.com/wfxr/ffgen
+  PROJECT_HOMEPAGE: https://github.com/oom-ai/ffgen
 
 on: [push, pull_request]
 

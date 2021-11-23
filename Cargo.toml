@@ -7,8 +7,8 @@ categories = ["command-line-utilities"]
 description = "A fast fake feature generator"
 license = "MIT/Apache-2.0"
 exclude = ["/completions"]
-repository = "https://github.com/wfxr/ffgen"
-homepage = "https://github.com/wfxr/ffgen"
+repository = "https://github.com/oom-ai/ffgen"
+homepage = "https://github.com/oom-ai/ffgen"
 
 build = "build.rs"
 
