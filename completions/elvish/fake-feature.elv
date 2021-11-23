@@ -18,53 +18,41 @@ set edit:completion:arg-completer[fake-feature] = [@words]{
     }
     var completions = [
         &'fake-feature'= {
+            cand --seed 'seed'
             cand -h 'Print help information'
             cand --help 'Print help information'
             cand -V 'Print version information'
             cand --version 'Print version information'
-            cand generate 'Generate fake data'
+            cand group 'Generate feature group data'
+            cand label 'Generate feature label data'
             cand completion 'Generate shell completion file'
             cand help 'Print this message or the help of the given subcommand(s)'
         }
-        &'fake-feature;generate'= {
-            cand --seed 'seed'
-            cand -h 'Print help information'
-            cand --help 'Print help information'
-            cand group 'Feature group data'
-            cand label 'Feature label data'
-            cand help 'Print this message or the help of the given subcommand(s)'
-        }
-        &'fake-feature;generate;group'= {
+        &'fake-feature;group'= {
             cand -I 'ID range'
             cand --id-range 'ID range'
             cand --seed 'seed'
-            cand --version 'Print version information'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
-        &'fake-feature;generate;label'= {
-            cand -I 'I'
-            cand --id-range 'id-range'
-            cand -T 'T'
-            cand --time-range 'time-range'
-            cand -l 'l'
-            cand --limit 'limit'
+        &'fake-feature;label'= {
+            cand -I 'Label id range'
+            cand --id-range 'Label id range'
+            cand -T 'Label time range'
+            cand --time-range 'Label time range'
+            cand -l 'Max entries to generate'
+            cand --limit 'Max entries to generate'
             cand --seed 'seed'
-            cand --version 'Print version information'
-            cand -h 'Print help information'
-            cand --help 'Print help information'
-        }
-        &'fake-feature;generate;help'= {
-            cand --seed 'seed'
-            cand --version 'Print version information'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
         &'fake-feature;completion'= {
+            cand --seed 'seed'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
         &'fake-feature;help'= {
+            cand --seed 'seed'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }

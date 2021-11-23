@@ -11,57 +11,53 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync 
     version = crate_version!(),
     author = crate_authors!(),
 )]
-pub enum Opt {
-    /// Generate fake data
-    #[clap(display_order = 1, aliases = &["gen"])]
-    Generate(GenerateCmd),
-
-    /// Generate shell completion file
-    #[clap(display_order = 2)]
-    Completion {
-        /// Target shell name
-        #[clap(arg_enum)]
-        shell: Shell,
-    },
-}
-
-#[derive(Debug, Parser)]
-pub struct GenerateCmd {
+pub struct Opt {
     #[clap(subcommand)]
-    pub subcommand: CategoryCmd,
+    pub subcommand: Subcommand,
 
     #[clap(long, global = true)]
     pub seed: Option<u64>,
 }
 
 #[derive(Debug, Parser)]
-pub enum CategoryCmd {
-    /// Feature group data
+pub enum Subcommand {
+    /// Generate feature group data
     #[clap(display_order = 1)]
     Group {
-        /// Target group
+        /// Target group name
         #[clap(name = "group", possible_values = Group::VARIANTS, default_value = Group::VARIANTS[0])]
-        group:    Group,
+        group: Group,
+
         /// ID range
         #[clap(long, short = 'I', default_value = "1..10", parse(try_from_str = parse_usize_range))]
         id_range: (usize, usize),
     },
 
-    /// Feature label data
+    /// Generate feature label data
     #[clap(display_order = 2)]
     Label {
         /// Target label name
         #[clap(name = "label", possible_values = Label::VARIANTS, default_value = Label::VARIANTS[0])]
         label: Label,
 
+        /// Label id range
         #[clap(long, short = 'I', default_value = "1..10", parse(try_from_str = parse_usize_range))]
         id_range: (usize, usize),
 
+        /// Label time range
         #[clap(long, short = 'T', default_value = "2021-01-01..2021-02-01", parse(try_from_str = parse_datetime_range))]
         time_range: (NaiveDateTime, NaiveDateTime),
 
+        /// Max entries to generate
         #[clap(long, short, default_value = "10")]
         limit: usize,
+    },
+
+    /// Generate shell completion file
+    Completion {
+        /// Target shell name
+        #[clap(arg_enum)]
+        shell: Shell,
     },
 }
 

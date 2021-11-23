@@ -15,9 +15,6 @@ _fake-feature() {
             completion)
                 cmd+="__completion"
                 ;;
-            generate)
-                cmd+="__generate"
-                ;;
             group)
                 cmd+="__group"
                 ;;
@@ -34,12 +31,16 @@ _fake-feature() {
 
     case "${cmd}" in
         fake__feature)
-            opts="-h -V --help --version generate completion help"
+            opts="-h -V --help --version --seed group label completion help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
+                --seed)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -48,21 +49,7 @@ _fake-feature() {
             return 0
             ;;
         fake__feature__completion)
-            opts="-h --help bash elvish fish powershell zsh"
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-                return 0
-            fi
-            case "${prev}" in
-                *)
-                    COMPREPLY=()
-                    ;;
-            esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            return 0
-            ;;
-        fake__feature__generate)
-            opts="-h --seed --help group label help"
+            opts="-h --help --seed bash elvish fish powershell zsh"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -79,9 +66,9 @@ _fake-feature() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        fake__feature__generate__group)
-            opts="-I -h --version --id-range --seed --help fraud_detection_account fraud_detection_transaction_stats"
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+        fake__feature__group)
+            opts="-I -h --id-range --help --seed fraud_detection_account fraud_detection_transaction_stats"
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
@@ -105,9 +92,9 @@ _fake-feature() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        fake__feature__generate__help)
-            opts="-h --version --seed --help"
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+        fake__feature__help)
+            opts="-h --help --seed"
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
@@ -123,9 +110,9 @@ _fake-feature() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        fake__feature__generate__label)
-            opts="-I -T -l -h --version --id-range --time-range --limit --seed --help fraud_detection_label"
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+        fake__feature__label)
+            opts="-I -T -l -h --id-range --time-range --limit --help --seed fraud_detection_label"
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
@@ -158,20 +145,6 @@ _fake-feature() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                *)
-                    COMPREPLY=()
-                    ;;
-            esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            return 0
-            ;;
-        fake__feature__help)
-            opts="-h --help"
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-                return 0
-            fi
-            case "${prev}" in
                 *)
                     COMPREPLY=()
                     ;;

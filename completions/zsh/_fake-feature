@@ -15,6 +15,7 @@ _fake-feature() {
 
     local context curcontext="$curcontext" state line
     _arguments "${_arguments_options[@]}" \
+'--seed=[]:SEED: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 '-V[Print version information]' \
@@ -28,61 +29,33 @@ _fake-feature() {
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:fake-feature-command-$line[1]:"
         case $line[1] in
-            (generate)
-_arguments "${_arguments_options[@]}" \
-'--seed=[]:SEED: ' \
-'-h[Print help information]' \
-'--help[Print help information]' \
-":: :_fake-feature__generate_commands" \
-"*::: :->generate" \
-&& ret=0
-
-    case $state in
-    (generate)
-        words=($line[1] "${words[@]}")
-        (( CURRENT += 1 ))
-        curcontext="${curcontext%:*:*}:fake-feature-generate-command-$line[1]:"
-        case $line[1] in
             (group)
 _arguments "${_arguments_options[@]}" \
 '-I+[ID range]:ID_RANGE: ' \
 '--id-range=[ID range]:ID_RANGE: ' \
 '--seed=[]:SEED: ' \
-'--version[Print version information]' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-'::group -- Target group:(fraud_detection_account fraud_detection_transaction_stats)' \
+'::group -- Target group name:(fraud_detection_account fraud_detection_transaction_stats)' \
 && ret=0
 ;;
 (label)
 _arguments "${_arguments_options[@]}" \
-'-I+[]:ID_RANGE: ' \
-'--id-range=[]:ID_RANGE: ' \
-'-T+[]:TIME_RANGE: ' \
-'--time-range=[]:TIME_RANGE: ' \
-'-l+[]:LIMIT: ' \
-'--limit=[]:LIMIT: ' \
+'-I+[Label id range]:ID_RANGE: ' \
+'--id-range=[Label id range]:ID_RANGE: ' \
+'-T+[Label time range]:TIME_RANGE: ' \
+'--time-range=[Label time range]:TIME_RANGE: ' \
+'-l+[Max entries to generate]:LIMIT: ' \
+'--limit=[Max entries to generate]:LIMIT: ' \
 '--seed=[]:SEED: ' \
-'--version[Print version information]' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 '::label -- Target label name:(fraud_detection_label)' \
 && ret=0
 ;;
-(help)
-_arguments "${_arguments_options[@]}" \
-'--seed=[]:SEED: ' \
-'--version[Print version information]' \
-'-h[Print help information]' \
-'--help[Print help information]' \
-&& ret=0
-;;
-        esac
-    ;;
-esac
-;;
 (completion)
 _arguments "${_arguments_options[@]}" \
+'--seed=[]:SEED: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':shell -- Target shell name:(bash elvish fish powershell zsh)' \
@@ -90,6 +63,7 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (help)
 _arguments "${_arguments_options[@]}" \
+'--seed=[]:SEED: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 && ret=0
@@ -102,7 +76,8 @@ esac
 (( $+functions[_fake-feature_commands] )) ||
 _fake-feature_commands() {
     local commands; commands=(
-'generate:Generate fake data' \
+'group:Generate feature group data' \
+'label:Generate feature label data' \
 'completion:Generate shell completion file' \
 'help:Print this message or the help of the given subcommand(s)' \
     )
@@ -113,34 +88,20 @@ _fake-feature__completion_commands() {
     local commands; commands=()
     _describe -t commands 'fake-feature completion commands' commands "$@"
 }
-(( $+functions[_fake-feature__generate_commands] )) ||
-_fake-feature__generate_commands() {
-    local commands; commands=(
-'group:Feature group data' \
-'label:Feature label data' \
-'help:Print this message or the help of the given subcommand(s)' \
-    )
-    _describe -t commands 'fake-feature generate commands' commands "$@"
-}
-(( $+functions[_fake-feature__generate__group_commands] )) ||
-_fake-feature__generate__group_commands() {
+(( $+functions[_fake-feature__group_commands] )) ||
+_fake-feature__group_commands() {
     local commands; commands=()
-    _describe -t commands 'fake-feature generate group commands' commands "$@"
-}
-(( $+functions[_fake-feature__generate__help_commands] )) ||
-_fake-feature__generate__help_commands() {
-    local commands; commands=()
-    _describe -t commands 'fake-feature generate help commands' commands "$@"
+    _describe -t commands 'fake-feature group commands' commands "$@"
 }
 (( $+functions[_fake-feature__help_commands] )) ||
 _fake-feature__help_commands() {
     local commands; commands=()
     _describe -t commands 'fake-feature help commands' commands "$@"
 }
-(( $+functions[_fake-feature__generate__label_commands] )) ||
-_fake-feature__generate__label_commands() {
+(( $+functions[_fake-feature__label_commands] )) ||
+_fake-feature__label_commands() {
     local commands; commands=()
-    _describe -t commands 'fake-feature generate label commands' commands "$@"
+    _describe -t commands 'fake-feature label commands' commands "$@"
 }
 
 _fake-feature "$@"
