@@ -1,5 +1,10 @@
 # ffgen
 
+[![CICD](https://github.com/oom-ai/ffgen/actions/workflows/CICD.yml/badge.svg)](https://github.com/oom-ai/ffgen/actions/workflows/CICD.yml)
+[![license](https://img.shields.io/badge/license-%20MIT/Apache--2.0-blue.svg)](https://github.com/oom-ai/ffgen/releases)
+[![release](https://img.shields.io/badge/Release-%20Linux%20|%20OSX%20|%20Win%20-orange.svg)](https://github.com/oom-ai/ffgen/releases)
+
+
 A fast **f**ake **f**eature **gen**erator
 
 ## Example
@@ -28,6 +33,7 @@ $ ffgen group fraud_detection_account --id-range 1..10 | csview
 +------+----------------+--------------+------------------+-------------------+
 ```
 
+**Integration with featctl**
 ```
 $ ffgen schema fraud_detection | featctl apply -f /dev/stdin
 2021/11/24 16:23:01 applied
