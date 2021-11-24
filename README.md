@@ -28,6 +28,15 @@ $ ffgen group fraud_detection_account --id-range 1..10 | csview
 +------+----------------+--------------+------------------+-------------------+
 ```
 
+```
+$ ffgen schema fraud_detection | featctl apply -f /dev/stdin
+2021/11/24 16:23:01 applied
+
+$ ffgen group fraud_detection_account | featctl import -g account --input-file /dev/stdin
+2021/11/24 16:23:15 succeeded
+RevisionID: 5
+```
+
 ## Installation
 
 Pre-built versions of `ffgen` for various architectures are available at [Github release page](https://github.com/oom-ai/ffgen/releases).
