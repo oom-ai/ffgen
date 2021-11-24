@@ -24,6 +24,9 @@ _ffgen() {
             label)
                 cmd+="__label"
                 ;;
+            schema)
+                cmd+="__schema"
+                ;;
             *)
                 ;;
         esac
@@ -31,7 +34,7 @@ _ffgen() {
 
     case "${cmd}" in
         ffgen)
-            opts="-h -V --help --version --seed group label completion help"
+            opts="-h -V --help --version --seed group label schema completion help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -137,6 +140,24 @@ _ffgen() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --seed)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        ffgen__schema)
+            opts="-h --list --help --seed fraud_detection"
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
                 --seed)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0

@@ -59,6 +59,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 },
             }
         }
+        Subcommand::Schema { scenario, list } => match list {
+            true => Scenario::VARIANTS.iter().for_each(|x| println!("{}", x)),
+            false => match scenario {
+                Scenario::FraudDetection => println!("{}", fraud_detection::schema()),
+            },
+        },
         Subcommand::Completion { shell } => {
             let app = &mut Opt::into_app();
             clap_generate::generate(shell, app, app.get_name().to_string(), &mut io::stdout())

@@ -26,7 +26,7 @@ pub enum Subcommand {
     #[clap(display_order = 1)]
     Group {
         /// Target group name
-        #[clap(name = "group", possible_values = Group::VARIANTS, default_value = Group::VARIANTS[0])]
+        #[clap(possible_values = Group::VARIANTS, default_value = Group::VARIANTS[0])]
         group: Group,
 
         /// ID range
@@ -42,7 +42,7 @@ pub enum Subcommand {
     #[clap(display_order = 2)]
     Label {
         /// Target label name
-        #[clap(name = "label", possible_values = Label::VARIANTS, default_value = Label::VARIANTS[0])]
+        #[clap(possible_values = Label::VARIANTS, default_value = Label::VARIANTS[0])]
         label: Label,
 
         /// Label id range
@@ -62,6 +62,19 @@ pub enum Subcommand {
         list: bool,
     },
 
+    /// Generate oomstore schema
+    #[clap(display_order = 3)]
+    Schema {
+        /// Target scenario name
+        #[clap(possible_values = Scenario::VARIANTS, default_value = Scenario::VARIANTS[0])]
+        scenario: Scenario,
+
+        /// List available scenario
+        #[clap(long)]
+        list: bool,
+    },
+
+    #[clap(display_order = 100)]
     /// Generate shell completion file
     Completion {
         /// Target shell name
@@ -104,4 +117,10 @@ pub enum Group {
 #[strum(serialize_all = "snake_case")]
 pub enum Label {
     FraudDetectionLabel,
+}
+
+#[derive(EnumString, EnumVariantNames, Debug)]
+#[strum(serialize_all = "snake_case")]
+pub enum Scenario {
+    FraudDetection,
 }

@@ -28,6 +28,35 @@ pub struct Label {
     timestamp: i64,
 }
 
+pub fn schema() -> &'static str {
+    r"
+kind: Entity
+name: user
+length: 12
+description: 'user id'
+batch-features:
+- group: account
+  description: 'user account info'
+  features:
+  - name: state
+    db-value-type: varchar(32)
+  - name: credit_score
+    db-value-type: int
+  - name: account_age_days
+    db-value-type: int
+  - name: has_2fa_installed
+    db-value-type: bool
+- group: transaction_stats
+  description: 'user transaction statistics'
+  features:
+  - name: transaction_count_7d
+    db-value-type: int
+  - name: transaction_count_30d
+    db-value-type: int
+"
+    .trim()
+}
+
 impl FakeFeatureGroup for Account {
     fn fake<R: Rng + ?Sized>(rng: &mut R, id: usize) -> Self {
         Account {

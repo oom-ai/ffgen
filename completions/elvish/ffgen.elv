@@ -25,6 +25,7 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --version 'Print version information'
             cand group 'Generate feature group data'
             cand label 'Generate feature label data'
+            cand schema 'Generate oomstore schema'
             cand completion 'Generate shell completion file'
             cand help 'Print this message or the help of the given subcommand(s)'
         }
@@ -44,6 +45,12 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --limit 'Max entries to generate'
             cand --seed 'Seed for the random generator'
             cand --list 'List available labels'
+            cand -h 'Print help information'
+            cand --help 'Print help information'
+        }
+        &'ffgen;schema'= {
+            cand --seed 'Seed for the random generator'
+            cand --list 'List available scenario'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
