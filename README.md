@@ -33,12 +33,12 @@ $ ffgen group fraud_detection_account --id-range 1..10 | csview
 +------+----------------+--------------+------------------+-------------------+
 ```
 
-**Integration with featctl**
+**Integration with oomctl**
 ```
-$ ffgen schema fraud_detection | featctl apply -f /dev/stdin
+$ ffgen schema fraud_detection | oomctl apply -f /dev/stdin
 2021/11/24 16:23:01 applied
 
-$ ffgen group fraud_detection_account | featctl import -g account --input-file /dev/stdin
+$ ffgen group fraud_detection_account | oomctl import -g account --input-file /dev/stdin
 2021/11/24 16:23:15 succeeded
 RevisionID: 5
 ```
