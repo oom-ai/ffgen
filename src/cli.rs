@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use chrono::{NaiveDate, NaiveDateTime};
 use clap::{self, crate_authors, crate_description, crate_version, Parser};
 use clap_generate::Shell;
@@ -18,6 +20,10 @@ pub struct Opt {
     /// Seed for the random generator
     #[clap(long, global = true, display_order = 100)]
     pub seed: Option<u64>,
+
+    /// Schema file
+    #[clap(short, long, global = true)]
+    pub file: Option<PathBuf>,
 }
 
 #[derive(Debug, Parser)]
@@ -26,28 +32,16 @@ pub enum Subcommand {
     #[clap(display_order = 1)]
     Group {
         /// Target group name
-        #[clap(possible_values = Group::VARIANTS, default_value = Group::VARIANTS[0])]
-        group: Group,
-
-        /// ID range
-        #[clap(long, short = 'I', default_value = "1..10", parse(try_from_str = parse_usize_range), display_order = 1)]
-        id_range: (usize, usize),
-
-        /// List available groups
-        #[clap(long, display_order = 2)]
-        list: bool,
+        #[clap()]
+        group: String,
     },
 
     /// Generate feature label data
     #[clap(display_order = 2)]
     Label {
         /// Target label name
-        #[clap(possible_values = Label::VARIANTS, default_value = Label::VARIANTS[0])]
-        label: Label,
-
-        /// Label id range
-        #[clap(long, short = 'I', default_value = "1..10", parse(try_from_str = parse_usize_range), display_order = 1)]
-        id_range: (usize, usize),
+        #[clap()]
+        label: String,
 
         /// Label time range
         #[clap(long, short = 'T', default_value = "2021-01-01..2021-02-01", parse(try_from_str = parse_datetime_range), display_order = 2)]
@@ -56,22 +50,13 @@ pub enum Subcommand {
         /// Max entries to generate
         #[clap(long, default_value = "10", display_order = 3)]
         limit: usize,
-
-        /// List available labels
-        #[clap(long, display_order = 4)]
-        list: bool,
     },
 
     /// Generate oomstore schema
     #[clap(display_order = 3)]
     Schema {
-        /// Target scenario name
-        #[clap(possible_values = Scenario::VARIANTS, default_value = Scenario::VARIANTS[0])]
-        scenario: Scenario,
-
-        /// List available scenario
-        #[clap(long)]
-        list: bool,
+        #[clap(possible_values = SchemaType::VARIANTS, default_value = SchemaType::VARIANTS[0])]
+        schema_type: SchemaType,
     },
 
     #[clap(display_order = 100)]
@@ -83,8 +68,10 @@ pub enum Subcommand {
     },
 }
 
-fn parse_usize_range(s: &str) -> Result<(usize, usize)> {
-    parse_range(s, "..", |s| Ok(s.parse()?))
+#[derive(EnumString, EnumVariantNames, Debug)]
+#[strum(serialize_all = "snake_case")]
+pub enum SchemaType {
+    OomStore,
 }
 
 fn parse_datetime_range(s: &str) -> Result<(NaiveDateTime, NaiveDateTime)> {
@@ -104,23 +91,4 @@ fn parse_datetime(s: &str) -> Result<NaiveDateTime> {
         .or_else(|_| NaiveDate::parse_from_str(s, "%Y-%m-%d").map(|d| d.and_hms(0, 0, 0)))
         .map_err(Box::new)
         .or_else(|_| Ok(NaiveDateTime::from_timestamp(s.parse::<i64>()?, 0)))
-}
-
-#[derive(EnumString, EnumVariantNames, Debug)]
-#[strum(serialize_all = "snake_case")]
-pub enum Group {
-    FraudDetectionAccount,
-    FraudDetectionTransactionStats,
-}
-
-#[derive(EnumString, EnumVariantNames, Debug)]
-#[strum(serialize_all = "snake_case")]
-pub enum Label {
-    FraudDetectionLabel,
-}
-
-#[derive(EnumString, EnumVariantNames, Debug)]
-#[strum(serialize_all = "snake_case")]
-pub enum Scenario {
-    FraudDetection,
 }

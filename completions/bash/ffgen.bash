@@ -34,13 +34,21 @@ _ffgen() {
 
     case "${cmd}" in
         ffgen)
-            opts="-h -V --help --version --seed group label schema completion help"
+            opts="-h -V -f --help --version --seed --file group label schema completion help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 --seed)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --file)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -f)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -52,13 +60,21 @@ _ffgen() {
             return 0
             ;;
         ffgen__completion)
-            opts="-h --help --seed bash elvish fish powershell zsh"
+            opts="-h -f --help --seed --file bash elvish fish powershell zsh"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 --seed)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --file)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -f)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -70,21 +86,21 @@ _ffgen() {
             return 0
             ;;
         ffgen__group)
-            opts="-I -h --id-range --list --help --seed fraud_detection_account fraud_detection_transaction_stats"
+            opts="-h -f --help --seed --file <GROUP>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --id-range)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
-                -I)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
                 --seed)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --file)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -f)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -96,13 +112,21 @@ _ffgen() {
             return 0
             ;;
         ffgen__help)
-            opts="-h --help --seed"
+            opts="-h -f --help --seed --file"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 --seed)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --file)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -f)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -114,20 +138,12 @@ _ffgen() {
             return 0
             ;;
         ffgen__label)
-            opts="-I -T -h --id-range --time-range --limit --list --help --seed fraud_detection_label"
+            opts="-T -h -f --time-range --limit --help --seed --file <LABEL>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --id-range)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
-                -I)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
                 --time-range)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -144,6 +160,14 @@ _ffgen() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --file)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -f)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -152,13 +176,21 @@ _ffgen() {
             return 0
             ;;
         ffgen__schema)
-            opts="-h --list --help --seed fraud_detection"
+            opts="-h -f --help --seed --file oom_store"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 --seed)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --file)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -f)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;

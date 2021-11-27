@@ -1,0 +1,56 @@
+entity:
+  name: user
+  from: 1
+  to: 10
+  seq_gen:
+    type: int
+  description: 'user entity'
+groups:
+  - name: account
+    description: 'user account info'
+    features:
+      - name: state
+        type: string
+        rand_gen:
+          type: state
+      - name: credit_score
+        type: int
+        rand_gen:
+          type: int
+          from: 500
+          to: 750
+      - name: account_age_days
+        type: int
+        rand_gen:
+          type: int
+          from: 1
+          to: 1095
+      - name: has_2fa_installed
+        type: bool
+        rand_gen:
+          type: bool
+          prob: 0.3
+  - name: transaction_stats
+    description: 'user transaction statistics'
+    features:
+      - name: transaction_count_7d
+        type: int
+        rand_gen:
+          type: int
+          from: 0
+          to: 14
+      - name: transaction_count_30d
+        type: int
+        rand_gen:
+          type: int
+          from: 14
+          to: 80
+labels:
+  - name: simple
+    description: 'basic label'
+    features:
+      - name: gender
+        type: string
+        rand_gen:
+          type: enum
+          values: ["F", "M"]

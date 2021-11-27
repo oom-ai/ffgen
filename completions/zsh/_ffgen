@@ -16,6 +16,8 @@ _ffgen() {
     local context curcontext="$curcontext" state line
     _arguments "${_arguments_options[@]}" \
 '--seed=[Seed for the random generator]:SEED: ' \
+'-f+[Schema file]:FILE: ' \
+'--file=[Schema file]:FILE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 '-V[Print version information]' \
@@ -31,41 +33,42 @@ _ffgen() {
         case $line[1] in
             (group)
 _arguments "${_arguments_options[@]}" \
-'-I+[ID range]:ID_RANGE: ' \
-'--id-range=[ID range]:ID_RANGE: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
-'--list[List available groups]' \
+'-f+[Schema file]:FILE: ' \
+'--file=[Schema file]:FILE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-'::group -- Target group name:(fraud_detection_account fraud_detection_transaction_stats)' \
+':group -- Target group name:' \
 && ret=0
 ;;
 (label)
 _arguments "${_arguments_options[@]}" \
-'-I+[Label id range]:ID_RANGE: ' \
-'--id-range=[Label id range]:ID_RANGE: ' \
 '-T+[Label time range]:TIME_RANGE: ' \
 '--time-range=[Label time range]:TIME_RANGE: ' \
 '--limit=[Max entries to generate]:LIMIT: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
-'--list[List available labels]' \
+'-f+[Schema file]:FILE: ' \
+'--file=[Schema file]:FILE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-'::label -- Target label name:(fraud_detection_label)' \
+':label -- Target label name:' \
 && ret=0
 ;;
 (schema)
 _arguments "${_arguments_options[@]}" \
 '--seed=[Seed for the random generator]:SEED: ' \
-'--list[List available scenario]' \
+'-f+[Schema file]:FILE: ' \
+'--file=[Schema file]:FILE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-'::scenario -- Target scenario name:(fraud_detection)' \
+'::schema-type:(oom_store)' \
 && ret=0
 ;;
 (completion)
 _arguments "${_arguments_options[@]}" \
 '--seed=[Seed for the random generator]:SEED: ' \
+'-f+[Schema file]:FILE: ' \
+'--file=[Schema file]:FILE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':shell -- Target shell name:(bash elvish fish powershell zsh)' \
@@ -74,6 +77,8 @@ _arguments "${_arguments_options[@]}" \
 (help)
 _arguments "${_arguments_options[@]}" \
 '--seed=[Seed for the random generator]:SEED: ' \
+'-f+[Schema file]:FILE: ' \
+'--file=[Schema file]:FILE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 && ret=0

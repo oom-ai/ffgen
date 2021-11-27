@@ -1,74 +1,59 @@
+#![feature(derive_default_enum)]
+
 mod cli;
-mod feature_group;
+mod core;
+mod schema;
 
 use clap::{IntoApp, Parser};
 use cli::*;
-use feature_group::prelude::*;
 use rand::prelude::*;
-use std::io;
-use strum::VariantNames;
+use schema::oomstore;
+use schema::Schema;
+use std::error::Error;
+use std::fs::File;
+use std::io::{self, BufRead, BufReader};
+use std::path::PathBuf;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let opt = Opt::parse();
-    let mut csv_writer = csv::Writer::from_writer(io::stdout());
+    let wtr = csv::Writer::from_writer(io::stdout());
     let seed = opt.seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
     let rng = &mut StdRng::seed_from_u64(seed);
 
     match opt.subcommand {
-        Subcommand::Group { group, id_range, list } => {
-            macro_rules! ffg {
-                ($($p:pat => $t:ty),+ $(,)?) => {
-                    match group {
-                        $(
-                            $p => fake_feature_group(rng, &id_range)
-                                    .try_for_each(|x: $t| csv_writer.serialize(x))?,
-                        )*
-                    }
-                }
-            }
-            match list {
-                true => Group::VARIANTS.iter().for_each(|x| println!("{}", x)),
-                false => ffg! {
-                    Group::FraudDetectionAccount => fraud_detection::Account,
-                    Group::FraudDetectionTransactionStats => fraud_detection::TransactionStats
-                },
-            }
+        Subcommand::Group { group } => {
+            let schema = parse_schema(opt.file)?;
+            core::fake_group(rng, &schema, &group, wtr)?;
         }
         Subcommand::Label {
             label,
-            id_range,
             time_range,
             limit,
-            list,
         } => {
-            macro_rules! ffl {
-                ($($p:pat => $t:ty),+ $(,)?) => {
-                    match label {
-                        $(
-                            $p => fake_feature_label(rng, &id_range, &time_range)
-                                    .take(limit)
-                                    .try_for_each(|x: $t| csv_writer.serialize(x))?
-                        )*
-                    }
+            let schema = parse_schema(opt.file)?;
+            core::fake_label(rng, &schema, &label, &time_range, limit, wtr)?;
+        }
+        Subcommand::Schema { schema_type } => {
+            let schema = parse_schema(opt.file)?;
+            match schema_type {
+                SchemaType::OomStore => {
+                    let oomstore_schema: oomstore::Entity = schema.into();
+                    println!("{}", serde_yaml::to_string(&oomstore_schema)?);
                 }
             }
-            match list {
-                true => Label::VARIANTS.iter().for_each(|x| println!("{}", x)),
-                false => ffl! {
-                    Label::FraudDetectionLabel => fraud_detection::Label,
-                },
-            }
         }
-        Subcommand::Schema { scenario, list } => match list {
-            true => Scenario::VARIANTS.iter().for_each(|x| println!("{}", x)),
-            false => match scenario {
-                Scenario::FraudDetection => println!("{}", fraud_detection::schema()),
-            },
-        },
         Subcommand::Completion { shell } => {
             let app = &mut Opt::into_app();
             clap_generate::generate(shell, app, app.get_name().to_string(), &mut io::stdout())
         }
     }
     Ok(())
+}
+
+fn parse_schema(path: Option<PathBuf>) -> Result<Schema, Box<dyn Error>> {
+    let reader: Box<dyn BufRead> = match path {
+        Some(path) => Box::new(BufReader::new(File::open(path)?)),
+        None => Box::new(BufReader::new(io::stdin())),
+    };
+    Ok(serde_yaml::from_reader(reader)?)
 }

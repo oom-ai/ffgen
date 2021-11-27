@@ -21,6 +21,8 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
     $completions = @(switch ($command) {
         'ffgen' {
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Schema file')
+            [CompletionResult]::new('--file', 'file', [CompletionResultType]::ParameterName, 'Schema file')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('-V', 'V', [CompletionResultType]::ParameterName, 'Print version information')
@@ -33,41 +35,44 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
             break
         }
         'ffgen;group' {
-            [CompletionResult]::new('-I', 'I', [CompletionResultType]::ParameterName, 'ID range')
-            [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'ID range')
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
-            [CompletionResult]::new('--list', 'list', [CompletionResultType]::ParameterName, 'List available groups')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Schema file')
+            [CompletionResult]::new('--file', 'file', [CompletionResultType]::ParameterName, 'Schema file')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
         }
         'ffgen;label' {
-            [CompletionResult]::new('-I', 'I', [CompletionResultType]::ParameterName, 'Label id range')
-            [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'Label id range')
             [CompletionResult]::new('-T', 'T', [CompletionResultType]::ParameterName, 'Label time range')
             [CompletionResult]::new('--time-range', 'time-range', [CompletionResultType]::ParameterName, 'Label time range')
             [CompletionResult]::new('--limit', 'limit', [CompletionResultType]::ParameterName, 'Max entries to generate')
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
-            [CompletionResult]::new('--list', 'list', [CompletionResultType]::ParameterName, 'List available labels')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Schema file')
+            [CompletionResult]::new('--file', 'file', [CompletionResultType]::ParameterName, 'Schema file')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
         }
         'ffgen;schema' {
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
-            [CompletionResult]::new('--list', 'list', [CompletionResultType]::ParameterName, 'List available scenario')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Schema file')
+            [CompletionResult]::new('--file', 'file', [CompletionResultType]::ParameterName, 'Schema file')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
         }
         'ffgen;completion' {
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Schema file')
+            [CompletionResult]::new('--file', 'file', [CompletionResultType]::ParameterName, 'Schema file')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
         }
         'ffgen;help' {
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Schema file')
+            [CompletionResult]::new('--file', 'file', [CompletionResultType]::ParameterName, 'Schema file')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
