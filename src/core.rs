@@ -4,11 +4,11 @@ use chrono::NaiveDateTime;
 use rand::Rng;
 use std::{io, iter::once};
 
-pub fn fake_group<R: Rng + ?Sized, W: io::Write>(
-    rng: &mut R,
+pub fn generate_group_data(
+    rng: &mut (impl Rng + ?Sized),
     schema: &Schema,
     group: &str,
-    mut wtr: csv::Writer<W>,
+    wtr: impl io::Write,
 ) -> anyhow::Result<()> {
     let features = &schema
         .groups
@@ -25,6 +25,8 @@ pub fn fake_group<R: Rng + ?Sized, W: io::Write>(
     let header = once(schema.entity.name.as_str())
         .chain(features.iter().map(|f| f.name.as_str()))
         .collect::<Vec<_>>();
+
+    let mut wtr = csv::Writer::from_writer(wtr);
     wtr.serialize(header)?;
 
     (schema.entity.from..=schema.entity.to)
@@ -37,13 +39,13 @@ pub fn fake_group<R: Rng + ?Sized, W: io::Write>(
     Ok(())
 }
 
-pub fn fake_label<R: Rng + ?Sized, W: io::Write>(
-    rng: &mut R,
+pub fn generate_label_data(
+    rng: &mut (impl Rng + ?Sized),
     schema: &Schema,
     label: &str,
     &(from, to): &(NaiveDateTime, NaiveDateTime),
     limit: usize,
-    mut wtr: csv::Writer<W>,
+    wtr: impl io::Write,
 ) -> anyhow::Result<()> {
     let features = &schema
         .labels
@@ -61,12 +63,11 @@ pub fn fake_label<R: Rng + ?Sized, W: io::Write>(
         .chain(once("timestamp"))
         .chain(features.iter().map(|f| f.name.as_str()))
         .collect::<Vec<_>>();
+
+    let mut wtr = csv::Writer::from_writer(wtr);
     wtr.serialize(header)?;
 
-    let id_gen = RandGen::Int {
-        from: schema.entity.from,
-        to:   schema.entity.to,
-    };
+    let id_gen = RandGen::Int { from: schema.entity.from, to: schema.entity.to };
     let ts_gen = RandGen::Timestamp { from, to };
 
     (0..limit)

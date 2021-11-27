@@ -5,11 +5,12 @@ mod schema;
 use clap::{IntoApp, Parser};
 use cli::*;
 use rand::prelude::*;
-use schema::oomstore;
-use schema::Schema;
-use std::fs::File;
-use std::io::{self, BufRead, BufReader};
-use std::path::PathBuf;
+use schema::{oomstore, Schema};
+use std::{
+    fs::File,
+    io::{self, BufRead, BufReader},
+    path::PathBuf,
+};
 
 fn main() {
     if let Err(e) = try_main() {
@@ -25,31 +26,22 @@ fn main() {
 
 fn try_main() -> anyhow::Result<()> {
     let opt = Opt::parse();
-    let wtr = csv::Writer::from_writer(io::stdout());
     let seed = opt.seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
     let rng = &mut StdRng::seed_from_u64(seed);
 
     match opt.subcommand {
         Subcommand::Group { group } => {
             let schema = parse_schema(opt.file)?;
-            core::fake_group(rng, &schema, &group, wtr)?;
+            core::generate_group_data(rng, &schema, &group, io::stdout())?;
         }
-        Subcommand::Label {
-            label,
-            time_range,
-            limit,
-        } => {
+        Subcommand::Label { label, time_range, limit } => {
             let schema = parse_schema(opt.file)?;
-            core::fake_label(rng, &schema, &label, &time_range, limit, wtr)?;
+            core::generate_label_data(rng, &schema, &label, &time_range, limit, io::stdout())?;
         }
-        Subcommand::Schema { schema_type } => {
+        Subcommand::Schema { schema_type: SchemaType::OomStore } => {
             let schema = parse_schema(opt.file)?;
-            match schema_type {
-                SchemaType::OomStore => {
-                    let oomstore_schema: oomstore::Entity = schema.into();
-                    println!("{}", serde_yaml::to_string(&oomstore_schema)?);
-                }
-            }
+            let oomstore_schema: oomstore::Entity = schema.into();
+            println!("{}", serde_yaml::to_string(&oomstore_schema)?);
         }
         Subcommand::Completion { shell } => {
             let app = &mut Opt::into_app();

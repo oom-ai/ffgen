@@ -1,6 +1,5 @@
 use clap::{ArgEnum, IntoApp};
-use std::fs;
-use std::path::Path;
+use std::{fs, path::Path};
 
 include!("src/cli.rs");
 
