@@ -66,10 +66,9 @@ impl RandGen {
     }
 }
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all(deserialize = "snake_case"))]
 pub enum SeqGen {
-    #[default]
     Int,
 }
 

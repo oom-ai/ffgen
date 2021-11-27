@@ -1,5 +1,3 @@
-#![feature(derive_default_enum)]
-
 mod cli;
 mod core;
 mod schema;
@@ -9,12 +7,23 @@ use cli::*;
 use rand::prelude::*;
 use schema::oomstore;
 use schema::Schema;
-use std::error::Error;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
 use std::path::PathBuf;
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
+    if let Err(e) = try_main() {
+        if let Some(ioerr) = e.root_cause().downcast_ref::<io::Error>() {
+            if ioerr.kind() == io::ErrorKind::BrokenPipe {
+                std::process::exit(0);
+            }
+        }
+        eprintln!("{}: {}", env!("CARGO_PKG_NAME"), e);
+        std::process::exit(1)
+    }
+}
+
+fn try_main() -> anyhow::Result<()> {
     let opt = Opt::parse();
     let wtr = csv::Writer::from_writer(io::stdout());
     let seed = opt.seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
@@ -50,7 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn parse_schema(path: Option<PathBuf>) -> Result<Schema, Box<dyn Error>> {
+fn parse_schema(path: Option<PathBuf>) -> anyhow::Result<Schema> {
     let reader: Box<dyn BufRead> = match path {
         Some(path) => Box::new(BufReader::new(File::open(path)?)),
         None => Box::new(BufReader::new(io::stdin())),
