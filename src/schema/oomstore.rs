@@ -1,3 +1,4 @@
+use super::{RandGen, Schema};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -26,8 +27,8 @@ pub struct Feature {
     pub description:   Option<String>,
 }
 
-impl From<super::Schema> for Entity {
-    fn from(s: super::Schema) -> Self {
+impl From<Schema> for Entity {
+    fn from(s: Schema) -> Self {
         Entity {
             kind:           "Entity".into(),
             length:         s.entity.len(),
@@ -43,11 +44,11 @@ impl From<super::Schema> for Entity {
                         .map(|f| Feature {
                             name:          f.name,
                             db_value_type: match f.rand_gen {
-                                super::RandGen::Int { .. } => "int8".into(),
-                                super::RandGen::Bool { .. } => "bool".into(),
-                                super::RandGen::State => "text".into(),
-                                super::RandGen::Enum { .. } => "text".into(),
-                                super::RandGen::Timestamp { .. } => "int8".into(),
+                                RandGen::Int { .. } => "int8".into(),
+                                RandGen::Bool { .. } => "bool".into(),
+                                RandGen::State => "text".into(),
+                                RandGen::Enum { .. } => "text".into(),
+                                RandGen::Timestamp { .. } => "int8".into(),
                             },
                             description:   f.description,
                         })

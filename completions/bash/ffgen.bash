@@ -86,12 +86,20 @@ _ffgen() {
             return 0
             ;;
         ffgen__group)
-            opts="-h -f --help --seed --file <GROUP>"
+            opts="-I -h -f --id-range --help --seed --file <GROUP>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
+                --id-range)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -I)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 --seed)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -138,12 +146,20 @@ _ffgen() {
             return 0
             ;;
         ffgen__label)
-            opts="-T -h -f --time-range --limit --help --seed --file <LABEL>"
+            opts="-I -T -h -f --id-range --time-range --limit --help --seed --file <LABEL>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
+                --id-range)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -I)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 --time-range)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0

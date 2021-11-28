@@ -33,6 +33,8 @@ _ffgen() {
         case $line[1] in
             (group)
 _arguments "${_arguments_options[@]}" \
+'-I+[ID range]:ID_RANGE: ' \
+'--id-range=[ID range]:ID_RANGE: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
 '-f+[Schema file]:FILE: ' \
 '--file=[Schema file]:FILE: ' \
@@ -43,6 +45,8 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (label)
 _arguments "${_arguments_options[@]}" \
+'-I+[ID range]:ID_RANGE: ' \
+'--id-range=[ID range]:ID_RANGE: ' \
 '-T+[Label time range]:TIME_RANGE: ' \
 '--time-range=[Label time range]:TIME_RANGE: ' \
 '--limit=[Max entries to generate]:LIMIT: ' \

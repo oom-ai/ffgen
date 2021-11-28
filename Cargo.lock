@@ -163,6 +163,7 @@ dependencies = [
  "csv",
  "erased-serde",
  "fake",
+ "lazy_static",
  "rand",
  "serde",
  "serde_yaml",

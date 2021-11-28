@@ -30,13 +30,21 @@ fn try_main() -> anyhow::Result<()> {
     let rng = &mut StdRng::seed_from_u64(seed);
 
     match opt.subcommand {
-        Subcommand::Group { group } => {
+        Subcommand::Group { group, id_range } => {
             let schema = parse_schema(opt.file)?;
-            core::generate_group_data(rng, &schema, &group, io::stdout())?;
+            core::generate_group_data(rng, &schema, &group, id_range.as_ref(), io::stdout())?;
         }
-        Subcommand::Label { label, time_range, limit } => {
+        Subcommand::Label { label, time_range, limit, id_range } => {
             let schema = parse_schema(opt.file)?;
-            core::generate_label_data(rng, &schema, &label, &time_range, limit, io::stdout())?;
+            core::generate_label_data(
+                rng,
+                &schema,
+                &label,
+                &time_range,
+                id_range.as_ref(),
+                limit,
+                io::stdout(),
+            )?;
         }
         Subcommand::Schema { schema_type: SchemaType::OomStore } => {
             let schema = parse_schema(opt.file)?;

@@ -1,8 +1,7 @@
-use std::path::PathBuf;
-
 use chrono::{NaiveDate, NaiveDateTime};
-use clap::{self, crate_authors, crate_description, crate_version, Parser};
+use clap::{self, crate_authors, crate_description, crate_version, lazy_static::lazy_static, Parser};
 use clap_generate::Shell;
+use std::path::PathBuf;
 use strum::{EnumString, EnumVariantNames, VariantNames};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync + 'static>>;
@@ -34,6 +33,10 @@ pub enum Subcommand {
         /// Target group name
         #[clap()]
         group: String,
+
+        /// ID range
+        #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), display_order = 1)]
+        id_range: Option<(i64, i64)>,
     },
 
     /// Generate feature label data
@@ -43,8 +46,12 @@ pub enum Subcommand {
         #[clap()]
         label: String,
 
+        /// ID range
+        #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), display_order = 1)]
+        id_range: Option<(i64, i64)>,
+
         /// Label time range
-        #[clap(long, short = 'T', default_value = "2021-01-01..2021-02-01", parse(try_from_str = parse_datetime_range), display_order = 2)]
+        #[clap(long, short = 'T', default_value = &DEFAULT_TIME_RANGE, parse(try_from_str = parse_datetime_range), display_order = 2)]
         time_range: (NaiveDateTime, NaiveDateTime),
 
         /// Max entries to generate
@@ -74,6 +81,10 @@ pub enum SchemaType {
     OomStore,
 }
 
+fn parse_i64_range(s: &str) -> Result<(i64, i64)> {
+    parse_range(s, "..", |s| Ok(s.parse()?))
+}
+
 fn parse_datetime_range(s: &str) -> Result<(NaiveDateTime, NaiveDateTime)> {
     parse_range(s, "..", parse_datetime)
 }
@@ -91,4 +102,12 @@ fn parse_datetime(s: &str) -> Result<NaiveDateTime> {
         .or_else(|_| NaiveDate::parse_from_str(s, "%Y-%m-%d").map(|d| d.and_hms(0, 0, 0)))
         .map_err(Box::new)
         .or_else(|_| Ok(NaiveDateTime::from_timestamp(s.parse::<i64>()?, 0)))
+}
+
+lazy_static! {
+    static ref DEFAULT_TIME_RANGE: String = {
+        let end = chrono::offset::Local::now();
+        let start = end - chrono::Duration::days(1);
+        format!("{}..{}", start.format("%Y-%m-%d"), end.format("%Y-%m-%d"))
+    };
 }

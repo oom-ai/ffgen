@@ -8,6 +8,7 @@ pub fn generate_group_data(
     rng: &mut (impl Rng + ?Sized),
     schema: &Schema,
     group: &str,
+    id_range: Option<&(i64, i64)>,
     wtr: impl io::Write,
 ) -> anyhow::Result<()> {
     let features = &schema
@@ -29,7 +30,12 @@ pub fn generate_group_data(
     let mut wtr = csv::Writer::from_writer(wtr);
     wtr.serialize(header)?;
 
-    (schema.entity.from..=schema.entity.to)
+    let id_range = match id_range {
+        Some(&(start, end)) => start..=end,
+        None => schema.entity.from..=schema.entity.to,
+    };
+
+    id_range
         .map(|i| {
             once(schema.entity.seq_gen.gen(i))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
@@ -43,7 +49,8 @@ pub fn generate_label_data(
     rng: &mut (impl Rng + ?Sized),
     schema: &Schema,
     label: &str,
-    &(from, to): &(NaiveDateTime, NaiveDateTime),
+    time_range: &(NaiveDateTime, NaiveDateTime),
+    id_range: Option<&(i64, i64)>,
     limit: usize,
     wtr: impl io::Write,
 ) -> anyhow::Result<()> {
@@ -67,8 +74,14 @@ pub fn generate_label_data(
     let mut wtr = csv::Writer::from_writer(wtr);
     wtr.serialize(header)?;
 
-    let id_gen = RandGen::Int { from: schema.entity.from, to: schema.entity.to };
-    let ts_gen = RandGen::Timestamp { from, to };
+    let (id_from, id_to) = match id_range {
+        Some(&(start, end)) => (start, end),
+        None => (schema.entity.from, schema.entity.to),
+    };
+    let id_gen = RandGen::Int { from: id_from, to: id_to };
+
+    let &(tm_from, tm_to) = time_range;
+    let ts_gen = RandGen::Timestamp { from: tm_from, to: tm_to };
 
     (0..limit)
         .map(|_| {

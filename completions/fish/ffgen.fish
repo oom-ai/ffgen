@@ -7,9 +7,11 @@ complete -c ffgen -n "__fish_use_subcommand" -f -a "label" -d 'Generate feature 
 complete -c ffgen -n "__fish_use_subcommand" -f -a "schema" -d 'Generate oomstore schema'
 complete -c ffgen -n "__fish_use_subcommand" -f -a "completion" -d 'Generate shell completion file'
 complete -c ffgen -n "__fish_use_subcommand" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c ffgen -n "__fish_seen_subcommand_from group" -s I -l id-range -d 'ID range' -r
 complete -c ffgen -n "__fish_seen_subcommand_from group" -l seed -d 'Seed for the random generator' -r
 complete -c ffgen -n "__fish_seen_subcommand_from group" -s f -l file -d 'Schema file' -r
 complete -c ffgen -n "__fish_seen_subcommand_from group" -s h -l help -d 'Print help information'
+complete -c ffgen -n "__fish_seen_subcommand_from label" -s I -l id-range -d 'ID range' -r
 complete -c ffgen -n "__fish_seen_subcommand_from label" -s T -l time-range -d 'Label time range' -r
 complete -c ffgen -n "__fish_seen_subcommand_from label" -l limit -d 'Max entries to generate' -r
 complete -c ffgen -n "__fish_seen_subcommand_from label" -l seed -d 'Seed for the random generator' -r

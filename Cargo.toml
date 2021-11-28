@@ -26,6 +26,7 @@ csv = "1.1"
 serde_yaml = "0.8"
 erased-serde = "0.3"
 anyhow = "1.0"
+lazy_static = "1.4"
 
 [build-dependencies]
 clap = { version = "3.0.0-beta.5", features = ["wrap_help"] }
