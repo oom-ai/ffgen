@@ -24,15 +24,13 @@ fn main() {
 }
 
 fn try_main() -> anyhow::Result<()> {
-    let opt = Opt::parse();
-
-    match opt.subcommand {
-        Subcommand::Group { group, id_range, rand: rand_opts, schema } => {
+    match Opt::parse() {
+        Opt::Group { group, id_range, rand: rand_opts, schema } => {
             let schema: Schema = schema.try_into()?;
             let mut rng: StdRng = rand_opts.into();
             core::generate_group_data(&mut rng, &schema, &group, id_range.as_ref(), io::stdout())?;
         }
-        Subcommand::Label { label, time_range, limit, id_range, rand: rand_opts, schema } => {
+        Opt::Label { label, time_range, limit, id_range, rand: rand_opts, schema } => {
             let schema: Schema = schema.try_into()?;
             let mut rng: StdRng = rand_opts.into();
             core::generate_label_data(
@@ -45,18 +43,18 @@ fn try_main() -> anyhow::Result<()> {
                 io::stdout(),
             )?;
         }
-        Subcommand::Schema { category: SchemaCategory::OomStore, schema } => {
+        Opt::Schema { category: SchemaCategory::OomStore, schema } => {
             let schema: Schema = schema.try_into()?;
             println!("{}", serde_yaml::to_string(&schema)?);
         }
-        Subcommand::List { category, schema } => {
+        Opt::List { category, schema } => {
             let schema: Schema = schema.try_into()?;
             match category {
                 ListCategory::Label => schema.labels.iter().for_each(|l| println!("{}", l.name)),
                 ListCategory::Group => schema.groups.iter().for_each(|g| println!("{}", g.name)),
             }
         }
-        Subcommand::Completion { shell } => {
+        Opt::Completion { shell } => {
             let app = &mut Opt::into_app();
             clap_generate::generate(shell, app, app.get_name().to_string(), &mut io::stdout())
         }

@@ -12,27 +12,7 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync 
     version = crate_version!(),
     author = crate_authors!(),
 )]
-pub struct Opt {
-    #[clap(subcommand)]
-    pub subcommand: Subcommand,
-}
-
-#[derive(Debug, Args)]
-pub struct RandOpt {
-    /// Seed for the random generator
-    #[clap(long, display_order = 100)]
-    pub seed: Option<u64>,
-}
-
-#[derive(Debug, Args)]
-pub struct SchemaOpt {
-    /// Schema file
-    #[clap(short, long)]
-    pub schema: PathBuf,
-}
-
-#[derive(Debug, Parser)]
-pub enum Subcommand {
+pub enum Opt {
     /// Generate feature group data
     #[clap(display_order = 1)]
     Group {
@@ -105,6 +85,20 @@ pub enum Subcommand {
     },
 }
 
+#[derive(Debug, Args)]
+pub struct RandOpt {
+    /// Seed for the random generator
+    #[clap(long, display_order = 100)]
+    pub seed: Option<u64>,
+}
+
+#[derive(Debug, Args)]
+pub struct SchemaOpt {
+    /// Schema file
+    #[clap(short, long)]
+    pub schema: PathBuf,
+}
+
 #[derive(EnumString, EnumVariantNames, Debug)]
 #[strum(serialize_all = "snake_case")]
 pub enum SchemaCategory {
@@ -126,7 +120,7 @@ fn parse_datetime_range(s: &str) -> Result<(NaiveDateTime, NaiveDateTime)> {
     parse_range(s, "..", parse_datetime)
 }
 
-fn parse_range<T: Ord>(s: &str, delimiter: &str, parse: fn(&str) -> Result<T>) -> Result<(T, T)> {
+fn parse_range<T>(s: &str, delimiter: &str, parse: fn(&str) -> Result<T>) -> Result<(T, T)> {
     match s.find(delimiter) {
         Some(pos) => Ok((parse(&s[..pos])?, parse(&s[pos + 2..])?)),
         None => Err(format!("range delimiter '..' not found in '{}'", s).into()),
