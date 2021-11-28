@@ -40,6 +40,15 @@ impl DataFormatOpt {
                 }
                 seq.end()?;
             }
+            crate::cli::DataFormat::Yaml => {
+                let mut ser = serde_yaml::Serializer::new(wtr);
+                let mut seq = ser.serialize_seq(None)?;
+                for row in data_iter {
+                    let map: HashMap<_, _> = header.iter().zip(row.iter()).collect();
+                    seq.serialize_element(&map)?
+                }
+                seq.end()?;
+            }
         }
         Ok(())
     }

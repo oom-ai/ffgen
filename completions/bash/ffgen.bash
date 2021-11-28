@@ -92,7 +92,7 @@ _ffgen() {
                     return 0
                     ;;
                 --format)
-                    COMPREPLY=($(compgen -W "csv json" -- "${cur}"))
+                    COMPREPLY=($(compgen -W "csv json yaml" -- "${cur}"))
                     return 0
                     ;;
                 *)
@@ -156,7 +156,7 @@ _ffgen() {
                     return 0
                     ;;
                 --format)
-                    COMPREPLY=($(compgen -W "csv json" -- "${cur}"))
+                    COMPREPLY=($(compgen -W "csv json yaml" -- "${cur}"))
                     return 0
                     ;;
                 *)

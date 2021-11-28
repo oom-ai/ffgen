@@ -119,6 +119,7 @@ pub struct DataFormatOpt {
 pub enum DataFormat {
     Csv,
     Json,
+    Yaml,
 }
 
 #[derive(EnumString, EnumVariantNames, Debug)]
