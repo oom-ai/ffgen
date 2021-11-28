@@ -1,8 +1,11 @@
-use super::{RandGen, Schema};
+use super::RandGen;
 use serde::{Deserialize, Serialize};
+
+pub type Schema = Entity;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename(serialize = "kebab-case"))]
+#[serde(rename_all = "kebab-case")]
 pub struct Entity {
     pub kind:           String,
     pub name:           String,
@@ -12,7 +15,7 @@ pub struct Entity {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(rename(serialize = "kebab-case"))]
+#[serde(rename_all = "kebab-case")]
 pub struct Group {
     pub group:       String,
     pub features:    Vec<Feature>,
@@ -20,15 +23,15 @@ pub struct Group {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(rename(serialize = "kebab-case"))]
+#[serde(rename_all = "kebab-case")]
 pub struct Feature {
     pub name:          String,
     pub db_value_type: String,
     pub description:   Option<String>,
 }
 
-impl From<Schema> for Entity {
-    fn from(s: Schema) -> Self {
+impl From<super::Schema> for Entity {
+    fn from(s: super::Schema) -> Self {
         Entity {
             kind:           "Entity".into(),
             length:         s.entity.len(),
