@@ -8,7 +8,7 @@ use rand::prelude::*;
 use schema::Schema;
 use std::{
     fs::File,
-    io::{self, BufReader},
+    io::{self, BufReader, Write},
 };
 
 fn main() {
@@ -24,35 +24,28 @@ fn main() {
 }
 
 fn try_main() -> anyhow::Result<()> {
+    let wtr = &mut io::stdout();
     match Opt::parse() {
         Opt::Group { group, id_range, rand: rand_opts, schema } => {
             let schema: Schema = schema.try_into()?;
             let mut rng: StdRng = rand_opts.into();
-            core::generate_group_data(&mut rng, &schema, &group, id_range.as_ref(), io::stdout())?;
+            core::generate_group_data(&mut rng, &schema, &group, id_range.as_ref(), wtr)?;
         }
         Opt::Label { label, time_range, limit, id_range, rand: rand_opts, schema } => {
             let schema: Schema = schema.try_into()?;
             let mut rng: StdRng = rand_opts.into();
-            core::generate_label_data(
-                &mut rng,
-                &schema,
-                &label,
-                &time_range,
-                id_range.as_ref(),
-                limit,
-                io::stdout(),
-            )?;
+            core::generate_label_data(&mut rng, &schema, &label, &time_range, id_range.as_ref(), limit, wtr)?;
         }
         Opt::Schema { category: SchemaCategory::Oomstore, schema } => {
             let schema: Schema = schema.try_into()?;
             let schema: schema::oomstore::Schema = schema.try_into()?;
-            serde_yaml::to_writer(io::stdout(), &schema)?;
+            writeln!(wtr, "{}", serde_yaml::to_string(&schema)?)?;
         }
         Opt::List { category, schema } => {
             let schema: Schema = schema.try_into()?;
             match category {
-                ListCategory::Label => schema.labels.iter().for_each(|l| println!("{}", l.name)),
-                ListCategory::Group => schema.groups.iter().for_each(|g| println!("{}", g.name)),
+                ListCategory::Label => schema.labels.iter().try_for_each(|l| writeln!(wtr, "{}", l.name))?,
+                ListCategory::Group => schema.groups.iter().try_for_each(|g| writeln!(wtr, "{}", g.name))?,
             }
         }
         Opt::Completion { shell } => {
