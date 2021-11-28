@@ -31,9 +31,8 @@ fn try_main() -> Result<()> {
             let mut rng: StdRng = rand.into();
             let mut recipe: Recipe = recipe.try_into()?;
             if let Some((from, to)) = id_range {
-                recipe.entity.from = from;
-                recipe.entity.to = to;
-            };
+                recipe.entity.seq_range = from..=to
+            }
 
             let (header, data_iter) = recipe.generate_group_data(&mut rng, &group)?;
             format.serialize(&header, data_iter, wtr)?;
@@ -42,11 +41,13 @@ fn try_main() -> Result<()> {
             let mut rng: StdRng = rand.into();
             let mut recipe: Recipe = recipe.try_into()?;
             if let Some((from, to)) = id_range {
-                recipe.entity.from = from;
-                recipe.entity.to = to;
-            };
+                recipe.entity.seq_range = from..=to
+            }
+            if let Some((from, to)) = time_range {
+                recipe.entity.time_range = from..=to
+            }
 
-            let (header, data_iter) = recipe.generate_label_data(&mut rng, &label, &time_range)?;
+            let (header, data_iter) = recipe.generate_label_data(&mut rng, &label)?;
             format.serialize(&header, data_iter.take(limit), wtr)?;
         }
         Opt::Schema { category: SchemaCategory::Oomstore, recipe, format } => {

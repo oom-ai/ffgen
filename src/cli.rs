@@ -1,6 +1,6 @@
 use anyhow::{bail, Result};
 use chrono::{NaiveDate, NaiveDateTime};
-use clap::{self, crate_authors, crate_description, crate_version, lazy_static::lazy_static, Args, Parser};
+use clap::{self, crate_authors, crate_description, crate_version, Args, Parser};
 use clap_generate::Shell;
 use std::path::PathBuf;
 use strum::{EnumString, EnumVariantNames, VariantNames};
@@ -45,8 +45,8 @@ pub enum Opt {
         id_range: Option<(i64, i64)>,
 
         /// Label time range
-        #[clap(long, short = 'T', default_value = &DEFAULT_TIME_RANGE, parse(try_from_str = parse_datetime_range), display_order = 2)]
-        time_range: (NaiveDateTime, NaiveDateTime),
+        #[clap(long, short = 'T', parse(try_from_str = parse_datetime_range), display_order = 2)]
+        time_range: Option<(NaiveDateTime, NaiveDateTime)>,
 
         /// Max entries to generate
         #[clap(short, long, default_value = "10", display_order = 3)]
@@ -174,12 +174,4 @@ fn parse_datetime(s: &str) -> Result<NaiveDateTime> {
         .or_else(|_| NaiveDate::parse_from_str(s, "%Y-%m-%d").map(|d| d.and_hms(0, 0, 0)))
         .map_err(Box::new)
         .or_else(|_| Ok(NaiveDateTime::from_timestamp(s.parse::<i64>()?, 0)))
-}
-
-lazy_static! {
-    static ref DEFAULT_TIME_RANGE: String = {
-        let end = chrono::offset::Local::now();
-        let start = end - chrono::Duration::days(1);
-        format!("{}..{}", start.format("%Y-%m-%d"), end.format("%Y-%m-%d"))
-    };
 }

@@ -19,21 +19,32 @@ pub struct Recipe {
 pub struct Entity {
     pub name:        String,
     pub description: Option<String>,
-    pub from:        i64,
-    pub to:          i64,
+    #[serde(default = "default_entity_seq_range")]
+    pub seq_range:   RangeInclusive<i64>,
+    #[serde(default = "default_entity_time_range")]
+    pub time_range:  RangeInclusive<NaiveDateTime>,
+    #[serde(default = "entity_seq_gen_default")]
     pub seq_gen:     SeqGen,
+}
+
+fn default_entity_seq_range() -> RangeInclusive<i64> {
+    1..=10
+}
+fn default_entity_time_range() -> RangeInclusive<NaiveDateTime> {
+    let end = chrono::Local::now().naive_local();
+    let start = end - chrono::Duration::days(1);
+    start..=end
+}
+fn entity_seq_gen_default() -> SeqGen {
+    SeqGen::Int
 }
 
 impl Entity {
     pub fn len(&self) -> usize {
         match self.seq_gen {
-            SeqGen::Int => self.to.to_string().len(),
+            SeqGen::Int => self.seq_range.end().to_string().len(),
             SeqGen::Md5 => 32,
         }
-    }
-
-    pub fn range(&self) -> RangeInclusive<i64> {
-        self.from..=self.to
     }
 }
 
@@ -116,7 +127,7 @@ impl Recipe {
             .chain(features.iter().map(|f| f.name.as_str()))
             .collect::<Vec<_>>();
 
-        let data_iter = (self.entity.range()).map(|i| {
+        let data_iter = self.entity.seq_range.clone().map(|i| {
             once(self.entity.seq_gen.gen(i))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
                 .collect::<Vec<_>>()
@@ -128,7 +139,6 @@ impl Recipe {
         &'a self,
         rng: &'a mut (impl Rng + ?Sized),
         label: &str,
-        time_range: &(NaiveDateTime, NaiveDateTime),
     ) -> Result<(Vec<&str>, impl DataIter + 'a)> {
         let features = &self
             .labels
@@ -147,11 +157,12 @@ impl Recipe {
             .chain(features.iter().map(|f| f.name.as_str()))
             .collect::<Vec<_>>();
 
-        let &(from, to) = time_range;
-        let ts_gen = RandGen::Timestamp { from, to };
-
+        let ts_gen = RandGen::Timestamp {
+            from: *self.entity.time_range.start(),
+            to:   *self.entity.time_range.end(),
+        };
         let data_iter = repeat(()).map(move |_| {
-            once(self.entity.seq_gen.gen(rng.gen_range(self.entity.range())))
+            once(self.entity.seq_gen.gen(rng.gen_range(self.entity.seq_range.clone())))
                 .chain(once(ts_gen.gen(rng)))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
                 .collect::<Vec<_>>()
