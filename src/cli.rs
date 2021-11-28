@@ -137,6 +137,7 @@ pub struct SchemaFormatOpt {
 pub enum SchemaFormat {
     Yaml,
     Json,
+    Toml,
 }
 
 #[derive(EnumString, EnumVariantNames, Debug)]

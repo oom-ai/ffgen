@@ -72,6 +72,13 @@ impl SchemaFormatOpt {
             SchemaFormat::Json => {
                 writeln!(wtr, "{}", serde_json::to_string(schema)?)?;
             }
+            SchemaFormat::Toml => {
+                // Note: the following code will not work: https://github.com/alexcrichton/toml-rs/issues/142
+                // writeln!(wtr, "{}", toml::to_string(schema)?)?;
+
+                let value = toml::Value::try_from(schema)?;
+                writeln!(wtr, "{}", toml::to_string(&value)?)?;
+            }
         }
         Ok(())
     }

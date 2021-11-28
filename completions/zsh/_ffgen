@@ -61,7 +61,7 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '-s+[Schema file for ffgen]:SCHEMA: ' \
 '--schema=[Schema file for ffgen]:SCHEMA: ' \
-'--format=[Schema format]:FORMAT:(yaml json)' \
+'--format=[Schema format]:FORMAT:(yaml json toml)' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 '::category -- Schema category:(oomstore)' \
