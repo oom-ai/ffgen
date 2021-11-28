@@ -1,9 +1,8 @@
 use crate::{
     cli::{DataFormatOpt, SchemaFormat, SchemaFormatOpt},
-    schema::DataIter,
+    recipe::{DataIter, Recipe},
     RandOpt,
-    Schema,
-    SchemaOpt,
+    RecipeOpt,
 };
 use anyhow::{Error, Result};
 use rand::prelude::*;
@@ -21,10 +20,10 @@ impl From<RandOpt> for StdRng {
     }
 }
 
-impl TryFrom<SchemaOpt> for Schema {
+impl TryFrom<RecipeOpt> for Recipe {
     type Error = Error;
-    fn try_from(opt: SchemaOpt) -> Result<Self, Self::Error> {
-        let file = File::open(opt.schema)?;
+    fn try_from(opt: RecipeOpt) -> Result<Self, Self::Error> {
+        let file = File::open(opt.recipe)?;
         Ok(serde_yaml::from_reader(BufReader::new(file))?)
     }
 }

@@ -65,7 +65,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__group)
-            opts="-I -s -h --id-range --seed --schema --format --help <GROUP>"
+            opts="-I -s -r -f -h --id-range --seed --recipe --format --help <GROUP>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -83,15 +83,23 @@ _ffgen() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --schema)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
                 -s)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --recipe)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -r)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 --format)
+                    COMPREPLY=($(compgen -W "csv json yaml" -- "${cur}"))
+                    return 0
+                    ;;
+                -f)
                     COMPREPLY=($(compgen -W "csv json yaml" -- "${cur}"))
                     return 0
                     ;;
@@ -117,7 +125,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__label)
-            opts="-I -T -s -h --id-range --time-range --limit --seed --schema --format --help <LABEL>"
+            opts="-I -T -l -s -r -f -h --id-range --time-range --limit --seed --recipe --format --help <LABEL>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -143,11 +151,11 @@ _ffgen() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --seed)
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --schema)
+                --seed)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -155,7 +163,19 @@ _ffgen() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --recipe)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -r)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 --format)
+                    COMPREPLY=($(compgen -W "csv json yaml" -- "${cur}"))
+                    return 0
+                    ;;
+                -f)
                     COMPREPLY=($(compgen -W "csv json yaml" -- "${cur}"))
                     return 0
                     ;;
@@ -167,17 +187,17 @@ _ffgen() {
             return 0
             ;;
         ffgen__list)
-            opts="-s -h --schema --help label group"
+            opts="-r -h --recipe --help label group"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --schema)
+                --recipe)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                -s)
+                -r)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -189,17 +209,17 @@ _ffgen() {
             return 0
             ;;
         ffgen__schema)
-            opts="-s -h --schema --format --help oomstore"
+            opts="-r -h --recipe --format --help oomstore"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --schema)
+                --recipe)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                -s)
+                -r)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;

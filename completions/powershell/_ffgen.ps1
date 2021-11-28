@@ -35,9 +35,11 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
         'ffgen;group' {
             [CompletionResult]::new('-I', 'I', [CompletionResultType]::ParameterName, 'ID range')
             [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'ID range')
+            [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Seed for the random generator')
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
-            [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
-            [CompletionResult]::new('--schema', 'schema', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
+            [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'Recipe file path')
+            [CompletionResult]::new('--recipe', 'recipe', [CompletionResultType]::ParameterName, 'Recipe file path')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Data format')
             [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'Data format')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
@@ -48,26 +50,29 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
             [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'ID range')
             [CompletionResult]::new('-T', 'T', [CompletionResultType]::ParameterName, 'Label time range')
             [CompletionResult]::new('--time-range', 'time-range', [CompletionResultType]::ParameterName, 'Label time range')
+            [CompletionResult]::new('-l', 'l', [CompletionResultType]::ParameterName, 'Max entries to generate')
             [CompletionResult]::new('--limit', 'limit', [CompletionResultType]::ParameterName, 'Max entries to generate')
+            [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Seed for the random generator')
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
-            [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
-            [CompletionResult]::new('--schema', 'schema', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
+            [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'Recipe file path')
+            [CompletionResult]::new('--recipe', 'recipe', [CompletionResultType]::ParameterName, 'Recipe file path')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Data format')
             [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'Data format')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
         }
         'ffgen;schema' {
-            [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
-            [CompletionResult]::new('--schema', 'schema', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
+            [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'Recipe file path')
+            [CompletionResult]::new('--recipe', 'recipe', [CompletionResultType]::ParameterName, 'Recipe file path')
             [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'Schema format')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
         }
         'ffgen;list' {
-            [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
-            [CompletionResult]::new('--schema', 'schema', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
+            [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'Recipe file path')
+            [CompletionResult]::new('--recipe', 'recipe', [CompletionResultType]::ParameterName, 'Recipe file path')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break

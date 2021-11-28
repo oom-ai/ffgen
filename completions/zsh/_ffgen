@@ -32,9 +32,11 @@ _ffgen() {
 _arguments "${_arguments_options[@]}" \
 '-I+[ID range]:ID_RANGE: ' \
 '--id-range=[ID range]:ID_RANGE: ' \
+'-s+[Seed for the random generator]:SEED: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
-'-s+[Schema file for ffgen]:SCHEMA: ' \
-'--schema=[Schema file for ffgen]:SCHEMA: ' \
+'-r+[Recipe file path]:RECIPE: ' \
+'--recipe=[Recipe file path]:RECIPE: ' \
+'-f+[Data format]:FORMAT:(csv json yaml)' \
 '--format=[Data format]:FORMAT:(csv json yaml)' \
 '-h[Print help information]' \
 '--help[Print help information]' \
@@ -47,10 +49,13 @@ _arguments "${_arguments_options[@]}" \
 '--id-range=[ID range]:ID_RANGE: ' \
 '-T+[Label time range]:TIME_RANGE: ' \
 '--time-range=[Label time range]:TIME_RANGE: ' \
+'-l+[Max entries to generate]:LIMIT: ' \
 '--limit=[Max entries to generate]:LIMIT: ' \
+'-s+[Seed for the random generator]:SEED: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
-'-s+[Schema file for ffgen]:SCHEMA: ' \
-'--schema=[Schema file for ffgen]:SCHEMA: ' \
+'-r+[Recipe file path]:RECIPE: ' \
+'--recipe=[Recipe file path]:RECIPE: ' \
+'-f+[Data format]:FORMAT:(csv json yaml)' \
 '--format=[Data format]:FORMAT:(csv json yaml)' \
 '-h[Print help information]' \
 '--help[Print help information]' \
@@ -59,8 +64,8 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (schema)
 _arguments "${_arguments_options[@]}" \
-'-s+[Schema file for ffgen]:SCHEMA: ' \
-'--schema=[Schema file for ffgen]:SCHEMA: ' \
+'-r+[Recipe file path]:RECIPE: ' \
+'--recipe=[Recipe file path]:RECIPE: ' \
 '--format=[Schema format]:FORMAT:(yaml json toml)' \
 '-h[Print help information]' \
 '--help[Print help information]' \
@@ -69,8 +74,8 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (list)
 _arguments "${_arguments_options[@]}" \
-'-s+[Schema file for ffgen]:SCHEMA: ' \
-'--schema=[Schema file for ffgen]:SCHEMA: ' \
+'-r+[Recipe file path]:RECIPE: ' \
+'--recipe=[Recipe file path]:RECIPE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':category -- Resource category:(label group)' \

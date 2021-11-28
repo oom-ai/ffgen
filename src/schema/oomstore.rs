@@ -1,4 +1,4 @@
-use super::RandGen;
+use crate::recipe::{RandGen, Recipe};
 use serde::{Deserialize, Serialize};
 
 pub type Schema = Entity;
@@ -30,8 +30,8 @@ pub struct Feature {
     pub description:   Option<String>,
 }
 
-impl From<super::Schema> for Entity {
-    fn from(s: super::Schema) -> Self {
+impl From<Recipe> for Entity {
+    fn from(s: Recipe) -> Self {
         Entity {
             kind:           "Entity".into(),
             length:         s.entity.len(),

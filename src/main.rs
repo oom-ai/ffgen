@@ -1,6 +1,7 @@
 #![feature(trait_alias)]
 
 mod cli;
+mod recipe;
 mod schema;
 mod util;
 
@@ -8,7 +9,7 @@ use anyhow::Result;
 use clap::{IntoApp, Parser};
 use cli::*;
 use rand::prelude::*;
-use schema::Schema;
+use recipe::*;
 use std::io::{self, Write};
 
 fn main() {
@@ -26,30 +27,30 @@ fn main() {
 fn try_main() -> Result<()> {
     let wtr = &mut io::stdout();
     match Opt::parse() {
-        Opt::Group { group, id_range, rand, schema, format } => {
-            let schema: Schema = schema.try_into()?;
+        Opt::Group { group, id_range, rand, recipe, format } => {
+            let recipe: Recipe = recipe.try_into()?;
             let mut rng: StdRng = rand.into();
 
-            let (header, data_iter) = schema.generate_group_data(&mut rng, &group, id_range.as_ref())?;
+            let (header, data_iter) = recipe.generate_group_data(&mut rng, &group, id_range.as_ref())?;
             format.serialize(&header, data_iter, wtr)?;
         }
-        Opt::Label { label, time_range, limit, id_range, rand, schema, format } => {
-            let schema: Schema = schema.try_into()?;
+        Opt::Label { label, time_range, limit, id_range, rand, recipe, format } => {
+            let recipe: Recipe = recipe.try_into()?;
             let mut rng: StdRng = rand.into();
 
-            let (header, data_iter) = schema.generate_label_data(&mut rng, &label, &time_range, id_range.as_ref())?;
+            let (header, data_iter) = recipe.generate_label_data(&mut rng, &label, &time_range, id_range.as_ref())?;
             format.serialize(&header, data_iter.take(limit), wtr)?;
         }
-        Opt::Schema { category: SchemaCategory::Oomstore, schema, format } => {
-            let schema: Schema = schema.try_into()?;
-            let schema: schema::oomstore::Schema = schema.try_into()?;
+        Opt::Schema { category: SchemaCategory::Oomstore, recipe, format } => {
+            let recipe: Recipe = recipe.try_into()?;
+            let schema: schema::oomstore::Schema = recipe.try_into()?;
             format.serialize(&schema, wtr)?;
         }
-        Opt::List { category, schema } => {
-            let schema: Schema = schema.try_into()?;
+        Opt::List { category, recipe } => {
+            let recipe: Recipe = recipe.try_into()?;
             match category {
-                ListCategory::Label => schema.labels.iter().try_for_each(|l| writeln!(wtr, "{}", l.name))?,
-                ListCategory::Group => schema.groups.iter().try_for_each(|g| writeln!(wtr, "{}", g.name))?,
+                ListCategory::Label => recipe.labels.iter().try_for_each(|l| writeln!(wtr, "{}", l.name))?,
+                ListCategory::Group => recipe.groups.iter().try_for_each(|g| writeln!(wtr, "{}", g.name))?,
             }
         }
         Opt::Completion { shell } => {

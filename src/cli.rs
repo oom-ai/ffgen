@@ -27,7 +27,7 @@ pub enum Opt {
         rand: RandOpt,
 
         #[clap(flatten)]
-        schema: SchemaOpt,
+        recipe: RecipeOpt,
 
         #[clap(flatten)]
         format: DataFormatOpt,
@@ -49,14 +49,14 @@ pub enum Opt {
         time_range: (NaiveDateTime, NaiveDateTime),
 
         /// Max entries to generate
-        #[clap(long, default_value = "10", display_order = 3)]
+        #[clap(short, long, default_value = "10", display_order = 3)]
         limit: usize,
 
         #[clap(flatten)]
         rand: RandOpt,
 
         #[clap(flatten)]
-        schema: SchemaOpt,
+        recipe: RecipeOpt,
 
         #[clap(flatten)]
         format: DataFormatOpt,
@@ -70,7 +70,7 @@ pub enum Opt {
         category: SchemaCategory,
 
         #[clap(flatten)]
-        schema: SchemaOpt,
+        recipe: RecipeOpt,
 
         #[clap(flatten)]
         format: SchemaFormatOpt,
@@ -84,7 +84,7 @@ pub enum Opt {
         category: ListCategory,
 
         #[clap(flatten)]
-        schema: SchemaOpt,
+        recipe: RecipeOpt,
     },
 
     #[clap(display_order = 100)]
@@ -99,21 +99,21 @@ pub enum Opt {
 #[derive(Debug, Args)]
 pub struct RandOpt {
     /// Seed for the random generator
-    #[clap(long, display_order = 100)]
+    #[clap(short, long, display_order = 100)]
     pub seed: Option<u64>,
 }
 
 #[derive(Debug, Args)]
-pub struct SchemaOpt {
-    /// Schema file for ffgen
-    #[clap(short, long)]
-    pub schema: PathBuf,
+pub struct RecipeOpt {
+    /// Recipe file path
+    #[clap(short, long, display_order = 0)]
+    pub recipe: PathBuf,
 }
 
 #[derive(Debug, Args)]
 pub struct DataFormatOpt {
     /// Data format
-    #[clap(long, possible_values = DataFormat::VARIANTS, default_value = DataFormat::VARIANTS[0])]
+    #[clap(short, long, possible_values = DataFormat::VARIANTS, default_value = DataFormat::VARIANTS[0])]
     pub format: DataFormat,
 }
 
