@@ -28,6 +28,9 @@ pub enum Opt {
 
         #[clap(flatten)]
         schema: SchemaOpt,
+
+        #[clap(flatten)]
+        format: DataFormatOpt,
     },
 
     /// Generate feature label data
@@ -54,6 +57,9 @@ pub enum Opt {
 
         #[clap(flatten)]
         schema: SchemaOpt,
+
+        #[clap(flatten)]
+        format: DataFormatOpt,
     },
 
     /// Generate feature store schema
@@ -99,6 +105,20 @@ pub struct SchemaOpt {
     /// Schema file for ffgen
     #[clap(short, long)]
     pub schema: PathBuf,
+}
+
+#[derive(Debug, Args)]
+pub struct DataFormatOpt {
+    /// Data format
+    #[clap(short, long, possible_values = DataFormat::VARIANTS, default_value = DataFormat::VARIANTS[0])]
+    pub format: DataFormat,
+}
+
+#[derive(EnumString, EnumVariantNames, Debug)]
+#[strum(serialize_all = "snake_case")]
+pub enum DataFormat {
+    Csv,
+    Json,
 }
 
 #[derive(EnumString, EnumVariantNames, Debug)]

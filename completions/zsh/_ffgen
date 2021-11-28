@@ -35,6 +35,8 @@ _arguments "${_arguments_options[@]}" \
 '--seed=[Seed for the random generator]:SEED: ' \
 '-s+[Schema file for ffgen]:SCHEMA: ' \
 '--schema=[Schema file for ffgen]:SCHEMA: ' \
+'-f+[Data format]:FORMAT:(csv json)' \
+'--format=[Data format]:FORMAT:(csv json)' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':group -- Target group name:' \
@@ -50,6 +52,8 @@ _arguments "${_arguments_options[@]}" \
 '--seed=[Seed for the random generator]:SEED: ' \
 '-s+[Schema file for ffgen]:SCHEMA: ' \
 '--schema=[Schema file for ffgen]:SCHEMA: ' \
+'-f+[Data format]:FORMAT:(csv json)' \
+'--format=[Data format]:FORMAT:(csv json)' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':label -- Target label name:' \

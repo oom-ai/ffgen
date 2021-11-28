@@ -35,6 +35,8 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --seed 'Seed for the random generator'
             cand -s 'Schema file for ffgen'
             cand --schema 'Schema file for ffgen'
+            cand -f 'Data format'
+            cand --format 'Data format'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
@@ -47,6 +49,8 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --seed 'Seed for the random generator'
             cand -s 'Schema file for ffgen'
             cand --schema 'Schema file for ffgen'
+            cand -f 'Data format'
+            cand --format 'Data format'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }

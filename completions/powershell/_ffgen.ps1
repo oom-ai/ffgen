@@ -38,6 +38,8 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
             [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
             [CompletionResult]::new('--schema', 'schema', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Data format')
+            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'Data format')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
@@ -51,6 +53,8 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
             [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
             [CompletionResult]::new('--schema', 'schema', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'Data format')
+            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'Data format')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break

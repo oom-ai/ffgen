@@ -1,7 +1,10 @@
+#![feature(trait_alias)]
+
 mod cli;
 mod schema;
 mod util;
 
+use anyhow::Result;
 use clap::{IntoApp, Parser};
 use cli::*;
 use rand::prelude::*;
@@ -20,29 +23,22 @@ fn main() {
     }
 }
 
-fn try_main() -> anyhow::Result<()> {
+fn try_main() -> Result<()> {
     let wtr = &mut io::stdout();
     match Opt::parse() {
-        Opt::Group { group, id_range, rand: rand_opts, schema } => {
+        Opt::Group { group, id_range, rand, schema, format } => {
             let schema: Schema = schema.try_into()?;
-            let mut rng: StdRng = rand_opts.into();
+            let mut rng: StdRng = rand.into();
 
-            let (header, mut data_iter) = schema.generate_group_data(&mut rng, &group, id_range.as_ref())?;
-            let mut wtr = csv::Writer::from_writer(wtr);
-
-            wtr.write_record(header)?;
-            data_iter.try_for_each(|r| wtr.serialize(&r))?;
+            let (header, data_iter) = schema.generate_group_data(&mut rng, &group, id_range.as_ref())?;
+            format.serialize(header, data_iter, wtr)?;
         }
-        Opt::Label { label, time_range, limit, id_range, rand: rand_opts, schema } => {
+        Opt::Label { label, time_range, limit, id_range, rand, schema, format } => {
             let schema: Schema = schema.try_into()?;
-            let mut rng: StdRng = rand_opts.into();
+            let mut rng: StdRng = rand.into();
 
             let (header, data_iter) = schema.generate_label_data(&mut rng, &label, &time_range, id_range.as_ref())?;
-
-            let mut wtr = csv::Writer::from_writer(wtr);
-
-            wtr.write_record(header)?;
-            data_iter.take(limit).try_for_each(|r| wtr.serialize(&r))?;
+            format.serialize(header, data_iter.take(limit), wtr)?;
         }
         Opt::Schema { category: SchemaCategory::Oomstore, schema } => {
             let schema: Schema = schema.try_into()?;

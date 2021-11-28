@@ -1,6 +1,6 @@
 pub mod oomstore;
 
-use anyhow::anyhow;
+use anyhow::{anyhow, Result};
 use chrono::NaiveDateTime;
 use fake::{faker::address::en::StateName, Fake};
 use rand::{prelude::SliceRandom, Rng};
@@ -81,16 +81,15 @@ impl SeqGen {
     }
 }
 
+pub trait DataIter = Iterator<Item = Vec<Box<dyn erased_serde::Serialize>>>;
+
 impl Schema {
     pub fn generate_group_data<'a>(
         &'a self,
         rng: &'a mut (impl Rng + ?Sized),
-        group: &'a str,
+        group: &str,
         id_range: Option<&(i64, i64)>,
-    ) -> anyhow::Result<(
-        Vec<&'a str>,
-        impl Iterator<Item = Vec<Box<dyn erased_serde::Serialize>>> + 'a,
-    )> {
+    ) -> Result<(Vec<&str>, impl DataIter + 'a)> {
         let features = &self
             .groups
             .iter()
@@ -123,13 +122,10 @@ impl Schema {
     pub fn generate_label_data<'a>(
         &'a self,
         rng: &'a mut (impl Rng + ?Sized),
-        label: &'a str,
-        time_range: &'a (NaiveDateTime, NaiveDateTime),
+        label: &str,
+        time_range: &(NaiveDateTime, NaiveDateTime),
         id_range: Option<&(i64, i64)>,
-    ) -> anyhow::Result<(
-        Vec<&'a str>,
-        impl Iterator<Item = Vec<Box<dyn erased_serde::Serialize>>> + 'a,
-    )> {
+    ) -> Result<(Vec<&str>, impl DataIter + 'a)> {
         let features = &self
             .labels
             .iter()
