@@ -110,7 +110,7 @@ pub struct SchemaOpt {
 #[derive(Debug, Args)]
 pub struct DataFormatOpt {
     /// Data format
-    #[clap(short, long, possible_values = DataFormat::VARIANTS, default_value = DataFormat::VARIANTS[0])]
+    #[clap(long, possible_values = DataFormat::VARIANTS, default_value = DataFormat::VARIANTS[0])]
     pub format: DataFormat,
 }
 

@@ -65,7 +65,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__group)
-            opts="-I -s -f -h --id-range --seed --schema --format --help <GROUP>"
+            opts="-I -s -h --id-range --seed --schema --format --help <GROUP>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -95,10 +95,6 @@ _ffgen() {
                     COMPREPLY=($(compgen -W "csv json" -- "${cur}"))
                     return 0
                     ;;
-                -f)
-                    COMPREPLY=($(compgen -W "csv json" -- "${cur}"))
-                    return 0
-                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -121,7 +117,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__label)
-            opts="-I -T -s -f -h --id-range --time-range --limit --seed --schema --format --help <LABEL>"
+            opts="-I -T -s -h --id-range --time-range --limit --seed --schema --format --help <LABEL>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -160,10 +156,6 @@ _ffgen() {
                     return 0
                     ;;
                 --format)
-                    COMPREPLY=($(compgen -W "csv json" -- "${cur}"))
-                    return 0
-                    ;;
-                -f)
                     COMPREPLY=($(compgen -W "csv json" -- "${cur}"))
                     return 0
                     ;;

@@ -1,7 +1,9 @@
 use crate::{cli::DataFormatOpt, schema::DataIter, RandOpt, Schema, SchemaOpt};
 use anyhow::{Error, Result};
 use rand::prelude::*;
+use serde::ser::{SerializeSeq, Serializer};
 use std::{
+    collections::HashMap,
     fs::File,
     io::{self, BufReader},
 };
@@ -29,7 +31,15 @@ impl DataFormatOpt {
                 wtr.write_record(header)?;
                 data_iter.try_for_each(|r| wtr.serialize(&r))?;
             }
-            crate::cli::DataFormat::Json => todo!(),
+            crate::cli::DataFormat::Json => {
+                let mut ser = serde_json::Serializer::new(wtr);
+                let mut seq = ser.serialize_seq(None)?;
+                for row in data_iter {
+                    let map: HashMap<_, _> = header.iter().zip(row.iter()).collect();
+                    seq.serialize_element(&map)?
+                }
+                seq.end()?;
+            }
         }
         Ok(())
     }
