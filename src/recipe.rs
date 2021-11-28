@@ -3,7 +3,10 @@ use chrono::NaiveDateTime;
 use fake::{faker::address::en::StateName, Fake};
 use rand::{prelude::SliceRandom, Rng};
 use serde::{Deserialize, Serialize};
-use std::iter::{once, repeat};
+use std::{
+    iter::{once, repeat},
+    ops::RangeInclusive,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Recipe {
@@ -25,7 +28,12 @@ impl Entity {
     pub fn len(&self) -> usize {
         match self.seq_gen {
             SeqGen::Int => self.to.to_string().len(),
+            SeqGen::Md5 => 32,
         }
+    }
+
+    pub fn range(&self) -> RangeInclusive<i64> {
+        self.from..=self.to
     }
 }
 
@@ -69,12 +77,17 @@ impl RandGen {
 #[serde(tag = "type", rename_all(deserialize = "snake_case"))]
 pub enum SeqGen {
     Int,
+    Md5,
 }
 
 impl SeqGen {
     pub fn gen(&self, value: i64) -> Box<dyn erased_serde::Serialize> {
         match self {
             Self::Int => Box::new(value),
+            Self::Md5 => {
+                use md5::Digest;
+                Box::new(format!("{:x}", md5::Md5::digest(&value.to_be_bytes())))
+            }
         }
     }
 }
@@ -86,7 +99,6 @@ impl Recipe {
         &'a self,
         rng: &'a mut (impl Rng + ?Sized),
         group: &str,
-        id_range: Option<&(i64, i64)>,
     ) -> Result<(Vec<&str>, impl DataIter + 'a)> {
         let features = &self
             .groups
@@ -104,12 +116,7 @@ impl Recipe {
             .chain(features.iter().map(|f| f.name.as_str()))
             .collect::<Vec<_>>();
 
-        let id_range = match id_range {
-            Some(&(start, end)) => start..=end,
-            None => self.entity.from..=self.entity.to,
-        };
-
-        let data_iter = id_range.map(|i| {
+        let data_iter = (self.entity.range()).map(|i| {
             once(self.entity.seq_gen.gen(i))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
                 .collect::<Vec<_>>()
@@ -122,7 +129,6 @@ impl Recipe {
         rng: &'a mut (impl Rng + ?Sized),
         label: &str,
         time_range: &(NaiveDateTime, NaiveDateTime),
-        id_range: Option<&(i64, i64)>,
     ) -> Result<(Vec<&str>, impl DataIter + 'a)> {
         let features = &self
             .labels
@@ -141,17 +147,11 @@ impl Recipe {
             .chain(features.iter().map(|f| f.name.as_str()))
             .collect::<Vec<_>>();
 
-        let (from, to) = match id_range {
-            Some(&(start, end)) => (start, end),
-            None => (self.entity.from, self.entity.to),
-        };
-        let id_gen = RandGen::Int { from, to };
-
         let &(from, to) = time_range;
         let ts_gen = RandGen::Timestamp { from, to };
 
         let data_iter = repeat(()).map(move |_| {
-            once(id_gen.gen(rng))
+            once(self.entity.seq_gen.gen(rng.gen_range(self.entity.range())))
                 .chain(once(ts_gen.gen(rng)))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
                 .collect::<Vec<_>>()

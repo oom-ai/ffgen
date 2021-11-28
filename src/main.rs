@@ -28,17 +28,25 @@ fn try_main() -> Result<()> {
     let wtr = &mut io::stdout();
     match Opt::parse() {
         Opt::Group { group, id_range, rand, recipe, format } => {
-            let recipe: Recipe = recipe.try_into()?;
             let mut rng: StdRng = rand.into();
+            let mut recipe: Recipe = recipe.try_into()?;
+            if let Some((from, to)) = id_range {
+                recipe.entity.from = from;
+                recipe.entity.to = to;
+            };
 
-            let (header, data_iter) = recipe.generate_group_data(&mut rng, &group, id_range.as_ref())?;
+            let (header, data_iter) = recipe.generate_group_data(&mut rng, &group)?;
             format.serialize(&header, data_iter, wtr)?;
         }
         Opt::Label { label, time_range, limit, id_range, rand, recipe, format } => {
-            let recipe: Recipe = recipe.try_into()?;
             let mut rng: StdRng = rand.into();
+            let mut recipe: Recipe = recipe.try_into()?;
+            if let Some((from, to)) = id_range {
+                recipe.entity.from = from;
+                recipe.entity.to = to;
+            };
 
-            let (header, data_iter) = recipe.generate_label_data(&mut rng, &label, &time_range, id_range.as_ref())?;
+            let (header, data_iter) = recipe.generate_label_data(&mut rng, &label, &time_range)?;
             format.serialize(&header, data_iter.take(limit), wtr)?;
         }
         Opt::Schema { category: SchemaCategory::Oomstore, recipe, format } => {
