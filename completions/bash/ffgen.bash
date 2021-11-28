@@ -189,7 +189,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__schema)
-            opts="-s -h --schema --help oomstore"
+            opts="-s -h --schema --format --help oomstore"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -201,6 +201,10 @@ _ffgen() {
                     ;;
                 -s)
                     COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --format)
+                    COMPREPLY=($(compgen -W "yaml" -- "${cur}"))
                     return 0
                     ;;
                 *)

@@ -19,6 +19,7 @@ complete -c ffgen -n "__fish_seen_subcommand_from label" -s s -l schema -d 'Sche
 complete -c ffgen -n "__fish_seen_subcommand_from label" -l format -d 'Data format' -r -f -a "{csv	,json	,yaml	}"
 complete -c ffgen -n "__fish_seen_subcommand_from label" -s h -l help -d 'Print help information'
 complete -c ffgen -n "__fish_seen_subcommand_from schema" -s s -l schema -d 'Schema file for ffgen' -r
+complete -c ffgen -n "__fish_seen_subcommand_from schema" -l format -d 'Schema format' -r -f -a "{yaml	}"
 complete -c ffgen -n "__fish_seen_subcommand_from schema" -s h -l help -d 'Print help information'
 complete -c ffgen -n "__fish_seen_subcommand_from list" -s s -l schema -d 'Schema file for ffgen' -r
 complete -c ffgen -n "__fish_seen_subcommand_from list" -s h -l help -d 'Print help information'

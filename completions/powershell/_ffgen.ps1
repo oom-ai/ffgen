@@ -60,6 +60,7 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
         'ffgen;schema' {
             [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
             [CompletionResult]::new('--schema', 'schema', [CompletionResultType]::ParameterName, 'Schema file for ffgen')
+            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'Schema format')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break

@@ -31,19 +31,19 @@ fn try_main() -> Result<()> {
             let mut rng: StdRng = rand.into();
 
             let (header, data_iter) = schema.generate_group_data(&mut rng, &group, id_range.as_ref())?;
-            format.serialize(header, data_iter, wtr)?;
+            format.serialize(&header, data_iter, wtr)?;
         }
         Opt::Label { label, time_range, limit, id_range, rand, schema, format } => {
             let schema: Schema = schema.try_into()?;
             let mut rng: StdRng = rand.into();
 
             let (header, data_iter) = schema.generate_label_data(&mut rng, &label, &time_range, id_range.as_ref())?;
-            format.serialize(header, data_iter.take(limit), wtr)?;
+            format.serialize(&header, data_iter.take(limit), wtr)?;
         }
-        Opt::Schema { category: SchemaCategory::Oomstore, schema } => {
+        Opt::Schema { category: SchemaCategory::Oomstore, schema, format } => {
             let schema: Schema = schema.try_into()?;
             let schema: schema::oomstore::Schema = schema.try_into()?;
-            writeln!(wtr, "{}", serde_yaml::to_string(&schema)?)?;
+            format.serialize(&schema, wtr)?;
         }
         Opt::List { category, schema } => {
             let schema: Schema = schema.try_into()?;

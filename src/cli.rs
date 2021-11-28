@@ -71,6 +71,9 @@ pub enum Opt {
 
         #[clap(flatten)]
         schema: SchemaOpt,
+
+        #[clap(flatten)]
+        format: SchemaFormatOpt,
     },
 
     /// List available resources
@@ -119,6 +122,19 @@ pub struct DataFormatOpt {
 pub enum DataFormat {
     Csv,
     Json,
+    Yaml,
+}
+
+#[derive(Debug, Args)]
+pub struct SchemaFormatOpt {
+    /// Schema format
+    #[clap(long, possible_values = SchemaFormat::VARIANTS, default_value = SchemaFormat::VARIANTS[0])]
+    pub format: SchemaFormat,
+}
+
+#[derive(EnumString, EnumVariantNames, Debug)]
+#[strum(serialize_all = "snake_case")]
+pub enum SchemaFormat {
     Yaml,
 }
 

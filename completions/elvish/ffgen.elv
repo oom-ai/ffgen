@@ -55,6 +55,7 @@ set edit:completion:arg-completer[ffgen] = [@words]{
         &'ffgen;schema'= {
             cand -s 'Schema file for ffgen'
             cand --schema 'Schema file for ffgen'
+            cand --format 'Schema format'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }

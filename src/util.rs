@@ -1,7 +1,13 @@
-use crate::{cli::DataFormatOpt, schema::DataIter, RandOpt, Schema, SchemaOpt};
+use crate::{
+    cli::{DataFormatOpt, SchemaFormatOpt},
+    schema::DataIter,
+    RandOpt,
+    Schema,
+    SchemaOpt,
+};
 use anyhow::{Error, Result};
 use rand::prelude::*;
-use serde::ser::{SerializeSeq, Serializer};
+use serde::ser::{self, SerializeSeq, Serializer};
 use std::{
     collections::HashMap,
     fs::File,
@@ -24,7 +30,7 @@ impl TryFrom<SchemaOpt> for Schema {
 }
 
 impl DataFormatOpt {
-    pub fn serialize(&self, header: Vec<&str>, mut data_iter: impl DataIter, wtr: impl io::Write) -> Result<()> {
+    pub fn serialize(&self, header: &[&str], mut data_iter: impl DataIter, wtr: impl io::Write) -> Result<()> {
         match self.format {
             crate::cli::DataFormat::Csv => {
                 let mut wtr = csv::Writer::from_writer(wtr);
@@ -48,6 +54,20 @@ impl DataFormatOpt {
                     seq.serialize_element(&map)?
                 }
                 seq.end()?;
+            }
+        }
+        Ok(())
+    }
+}
+
+impl SchemaFormatOpt {
+    pub fn serialize<T>(&self, schema: &T, mut wtr: impl io::Write) -> Result<()>
+    where
+        T: ser::Serialize,
+    {
+        match self.format {
+            crate::cli::SchemaFormat::Yaml => {
+                writeln!(wtr, "{}", serde_yaml::to_string(schema)?)?;
             }
         }
         Ok(())
