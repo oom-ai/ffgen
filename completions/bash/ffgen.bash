@@ -204,7 +204,7 @@ _ffgen() {
                     return 0
                     ;;
                 --format)
-                    COMPREPLY=($(compgen -W "yaml" -- "${cur}"))
+                    COMPREPLY=($(compgen -W "yaml json" -- "${cur}"))
                     return 0
                     ;;
                 *)

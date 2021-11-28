@@ -136,6 +136,7 @@ pub struct SchemaFormatOpt {
 #[strum(serialize_all = "snake_case")]
 pub enum SchemaFormat {
     Yaml,
+    Json,
 }
 
 #[derive(EnumString, EnumVariantNames, Debug)]

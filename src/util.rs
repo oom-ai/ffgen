@@ -1,5 +1,5 @@
 use crate::{
-    cli::{DataFormatOpt, SchemaFormatOpt},
+    cli::{DataFormatOpt, SchemaFormat, SchemaFormatOpt},
     schema::DataIter,
     RandOpt,
     Schema,
@@ -66,8 +66,11 @@ impl SchemaFormatOpt {
         T: ser::Serialize,
     {
         match self.format {
-            crate::cli::SchemaFormat::Yaml => {
+            SchemaFormat::Yaml => {
                 writeln!(wtr, "{}", serde_yaml::to_string(schema)?)?;
+            }
+            SchemaFormat::Json => {
+                writeln!(wtr, "{}", serde_json::to_string(schema)?)?;
             }
         }
         Ok(())
