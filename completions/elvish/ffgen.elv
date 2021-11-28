@@ -24,17 +24,17 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --version 'Print version information'
             cand group 'Generate feature group data'
             cand label 'Generate feature label data'
-            cand schema 'Generate oomstore schema'
-            cand list 'list'
-            cand completion 'Generate shell completion file'
+            cand schema 'Generate feature store schema'
+            cand list 'List available resources'
+            cand completion 'Output shell completion code'
             cand help 'Print this message or the help of the given subcommand(s)'
         }
         &'ffgen;group'= {
             cand -I 'ID range'
             cand --id-range 'ID range'
             cand --seed 'Seed for the random generator'
-            cand -s 'Schema file'
-            cand --schema 'Schema file'
+            cand -s 'Schema file for ffgen'
+            cand --schema 'Schema file for ffgen'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
@@ -45,20 +45,20 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --time-range 'Label time range'
             cand --limit 'Max entries to generate'
             cand --seed 'Seed for the random generator'
-            cand -s 'Schema file'
-            cand --schema 'Schema file'
+            cand -s 'Schema file for ffgen'
+            cand --schema 'Schema file for ffgen'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
         &'ffgen;schema'= {
-            cand -s 'Schema file'
-            cand --schema 'Schema file'
+            cand -s 'Schema file for ffgen'
+            cand --schema 'Schema file for ffgen'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
         &'ffgen;list'= {
-            cand -s 'Schema file'
-            cand --schema 'Schema file'
+            cand -s 'Schema file for ffgen'
+            cand --schema 'Schema file for ffgen'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }

@@ -181,7 +181,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__schema)
-            opts="-s -h --schema --help oom_store"
+            opts="-s -h --schema --help oomstore"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0

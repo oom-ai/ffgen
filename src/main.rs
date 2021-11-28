@@ -43,7 +43,7 @@ fn try_main() -> anyhow::Result<()> {
                 io::stdout(),
             )?;
         }
-        Opt::Schema { category: SchemaCategory::OomStore, schema } => {
+        Opt::Schema { category: SchemaCategory::Oomstore, schema } => {
             let schema: Schema = schema.try_into()?;
             println!("{}", serde_yaml::to_string(&schema)?);
         }

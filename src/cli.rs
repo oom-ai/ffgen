@@ -1,10 +1,9 @@
+use anyhow::{bail, Result};
 use chrono::{NaiveDate, NaiveDateTime};
 use clap::{self, crate_authors, crate_description, crate_version, lazy_static::lazy_static, Args, Parser};
 use clap_generate::Shell;
 use std::path::PathBuf;
 use strum::{EnumString, EnumVariantNames, VariantNames};
-
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync + 'static>>;
 
 #[derive(Debug, Parser)]
 #[clap(
@@ -57,9 +56,10 @@ pub enum Opt {
         schema: SchemaOpt,
     },
 
-    /// Generate oomstore schema
+    /// Generate feature store schema
     #[clap(display_order = 3)]
     Schema {
+        /// Schema category
         #[clap(possible_values = SchemaCategory::VARIANTS, default_value = SchemaCategory::VARIANTS[0])]
         category: SchemaCategory,
 
@@ -67,8 +67,10 @@ pub enum Opt {
         schema: SchemaOpt,
     },
 
+    /// List available resources
     #[clap(display_order = 4)]
     List {
+        /// Resource category
         #[clap(possible_values = ListCategory::VARIANTS)]
         category: ListCategory,
 
@@ -77,7 +79,7 @@ pub enum Opt {
     },
 
     #[clap(display_order = 100)]
-    /// Generate shell completion file
+    /// Output shell completion code
     Completion {
         /// Target shell name
         #[clap(arg_enum)]
@@ -94,7 +96,7 @@ pub struct RandOpt {
 
 #[derive(Debug, Args)]
 pub struct SchemaOpt {
-    /// Schema file
+    /// Schema file for ffgen
     #[clap(short, long)]
     pub schema: PathBuf,
 }
@@ -102,7 +104,7 @@ pub struct SchemaOpt {
 #[derive(EnumString, EnumVariantNames, Debug)]
 #[strum(serialize_all = "snake_case")]
 pub enum SchemaCategory {
-    OomStore,
+    Oomstore,
 }
 
 #[derive(EnumString, EnumVariantNames, Debug)]
@@ -123,7 +125,7 @@ fn parse_datetime_range(s: &str) -> Result<(NaiveDateTime, NaiveDateTime)> {
 fn parse_range<T>(s: &str, delimiter: &str, parse: fn(&str) -> Result<T>) -> Result<(T, T)> {
     match s.find(delimiter) {
         Some(pos) => Ok((parse(&s[..pos])?, parse(&s[pos + 2..])?)),
-        None => Err(format!("range delimiter '..' not found in '{}'", s).into()),
+        None => bail!("range delimiter '..' not found in '{}'", s),
     }
 }
 

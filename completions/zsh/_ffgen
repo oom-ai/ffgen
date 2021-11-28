@@ -33,8 +33,8 @@ _arguments "${_arguments_options[@]}" \
 '-I+[ID range]:ID_RANGE: ' \
 '--id-range=[ID range]:ID_RANGE: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
-'-s+[Schema file]:SCHEMA: ' \
-'--schema=[Schema file]:SCHEMA: ' \
+'-s+[Schema file for ffgen]:SCHEMA: ' \
+'--schema=[Schema file for ffgen]:SCHEMA: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':group -- Target group name:' \
@@ -48,8 +48,8 @@ _arguments "${_arguments_options[@]}" \
 '--time-range=[Label time range]:TIME_RANGE: ' \
 '--limit=[Max entries to generate]:LIMIT: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
-'-s+[Schema file]:SCHEMA: ' \
-'--schema=[Schema file]:SCHEMA: ' \
+'-s+[Schema file for ffgen]:SCHEMA: ' \
+'--schema=[Schema file for ffgen]:SCHEMA: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':label -- Target label name:' \
@@ -57,20 +57,20 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (schema)
 _arguments "${_arguments_options[@]}" \
-'-s+[Schema file]:SCHEMA: ' \
-'--schema=[Schema file]:SCHEMA: ' \
+'-s+[Schema file for ffgen]:SCHEMA: ' \
+'--schema=[Schema file for ffgen]:SCHEMA: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-'::category:(oom_store)' \
+'::category -- Schema category:(oomstore)' \
 && ret=0
 ;;
 (list)
 _arguments "${_arguments_options[@]}" \
-'-s+[Schema file]:SCHEMA: ' \
-'--schema=[Schema file]:SCHEMA: ' \
+'-s+[Schema file for ffgen]:SCHEMA: ' \
+'--schema=[Schema file for ffgen]:SCHEMA: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-':category:(label group)' \
+':category -- Resource category:(label group)' \
 && ret=0
 ;;
 (completion)
@@ -96,9 +96,9 @@ _ffgen_commands() {
     local commands; commands=(
 'group:Generate feature group data' \
 'label:Generate feature label data' \
-'schema:Generate oomstore schema' \
-'list:' \
-'completion:Generate shell completion file' \
+'schema:Generate feature store schema' \
+'list:List available resources' \
+'completion:Output shell completion code' \
 'help:Print this message or the help of the given subcommand(s)' \
     )
     _describe -t commands 'ffgen commands' commands "$@"
