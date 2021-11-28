@@ -1,10 +1,11 @@
 pub mod oomstore;
 
+use anyhow::anyhow;
 use chrono::NaiveDateTime;
 use fake::{faker::address::en::StateName, Fake};
 use rand::{prelude::SliceRandom, Rng};
-
 use serde::{Deserialize, Serialize};
+use std::iter::{once, repeat};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Schema {
@@ -77,5 +78,90 @@ impl SeqGen {
         match self {
             Self::Int => Box::new(value),
         }
+    }
+}
+
+impl Schema {
+    pub fn generate_group_data<'a>(
+        &'a self,
+        rng: &'a mut (impl Rng + ?Sized),
+        group: &'a str,
+        id_range: Option<&(i64, i64)>,
+    ) -> anyhow::Result<(
+        Vec<&'a str>,
+        impl Iterator<Item = Vec<Box<dyn erased_serde::Serialize>>> + 'a,
+    )> {
+        let features = &self
+            .groups
+            .iter()
+            .find(|g| g.name == group)
+            .ok_or_else(|| {
+                anyhow!(
+                    "group not found int schema. possible_values = {:?}",
+                    self.groups.iter().map(|g| &g.name).collect::<Vec<_>>()
+                )
+            })?
+            .features;
+
+        let header = once(self.entity.name.as_str())
+            .chain(features.iter().map(|f| f.name.as_str()))
+            .collect::<Vec<_>>();
+
+        let id_range = match id_range {
+            Some(&(start, end)) => start..=end,
+            None => self.entity.from..=self.entity.to,
+        };
+
+        let data_iter = id_range.map(|i| {
+            once(self.entity.seq_gen.gen(i))
+                .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
+                .collect::<Vec<_>>()
+        });
+        Ok((header, data_iter))
+    }
+
+    pub fn generate_label_data<'a>(
+        &'a self,
+        rng: &'a mut (impl Rng + ?Sized),
+        label: &'a str,
+        time_range: &'a (NaiveDateTime, NaiveDateTime),
+        id_range: Option<&(i64, i64)>,
+    ) -> anyhow::Result<(
+        Vec<&'a str>,
+        impl Iterator<Item = Vec<Box<dyn erased_serde::Serialize>>> + 'a,
+    )> {
+        let features = &self
+            .labels
+            .iter()
+            .find(|l| l.name == label)
+            .ok_or_else(|| {
+                anyhow!(
+                    "label not found int self. possible_values = {:?}",
+                    self.labels.iter().map(|g| &g.name).collect::<Vec<_>>()
+                )
+            })?
+            .features;
+
+        let header = once(self.entity.name.as_str())
+            .chain(once("timestamp"))
+            .chain(features.iter().map(|f| f.name.as_str()))
+            .collect::<Vec<_>>();
+
+        let (from, to) = match id_range {
+            Some(&(start, end)) => (start, end),
+            None => (self.entity.from, self.entity.to),
+        };
+        let id_gen = RandGen::Int { from, to };
+
+        let &(from, to) = time_range;
+        let ts_gen = RandGen::Timestamp { from, to };
+
+        let data_iter = repeat(()).map(move |_| {
+            once(id_gen.gen(rng))
+                .chain(once(ts_gen.gen(rng)))
+                .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
+                .collect::<Vec<_>>()
+        });
+        Ok((header, data_iter))
     }
 }

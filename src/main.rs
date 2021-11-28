@@ -1,15 +1,12 @@
 mod cli;
-mod core;
 mod schema;
+mod util;
 
 use clap::{IntoApp, Parser};
 use cli::*;
 use rand::prelude::*;
 use schema::Schema;
-use std::{
-    fs::File,
-    io::{self, BufReader, Write},
-};
+use std::io::{self, Write};
 
 fn main() {
     if let Err(e) = try_main() {
@@ -29,12 +26,23 @@ fn try_main() -> anyhow::Result<()> {
         Opt::Group { group, id_range, rand: rand_opts, schema } => {
             let schema: Schema = schema.try_into()?;
             let mut rng: StdRng = rand_opts.into();
-            core::generate_group_data(&mut rng, &schema, &group, id_range.as_ref(), wtr)?;
+
+            let (header, mut data_iter) = schema.generate_group_data(&mut rng, &group, id_range.as_ref())?;
+            let mut wtr = csv::Writer::from_writer(wtr);
+
+            wtr.write_record(header)?;
+            data_iter.try_for_each(|r| wtr.serialize(&r))?;
         }
         Opt::Label { label, time_range, limit, id_range, rand: rand_opts, schema } => {
             let schema: Schema = schema.try_into()?;
             let mut rng: StdRng = rand_opts.into();
-            core::generate_label_data(&mut rng, &schema, &label, &time_range, id_range.as_ref(), limit, wtr)?;
+
+            let (header, data_iter) = schema.generate_label_data(&mut rng, &label, &time_range, id_range.as_ref())?;
+
+            let mut wtr = csv::Writer::from_writer(wtr);
+
+            wtr.write_record(header)?;
+            data_iter.take(limit).try_for_each(|r| wtr.serialize(&r))?;
         }
         Opt::Schema { category: SchemaCategory::Oomstore, schema } => {
             let schema: Schema = schema.try_into()?;
@@ -54,19 +62,4 @@ fn try_main() -> anyhow::Result<()> {
         }
     }
     Ok(())
-}
-
-impl From<RandOpt> for StdRng {
-    fn from(opt: RandOpt) -> Self {
-        let seed = opt.seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
-        StdRng::seed_from_u64(seed)
-    }
-}
-
-impl TryFrom<SchemaOpt> for Schema {
-    type Error = anyhow::Error;
-    fn try_from(opt: SchemaOpt) -> Result<Self, Self::Error> {
-        let file = File::open(opt.schema)?;
-        Ok(serde_yaml::from_reader(BufReader::new(file))?)
-    }
 }
