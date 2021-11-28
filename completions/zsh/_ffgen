@@ -15,9 +15,6 @@ _ffgen() {
 
     local context curcontext="$curcontext" state line
     _arguments "${_arguments_options[@]}" \
-'--seed=[Seed for the random generator]:SEED: ' \
-'-f+[Schema file]:FILE: ' \
-'--file=[Schema file]:FILE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 '-V[Print version information]' \
@@ -36,8 +33,8 @@ _arguments "${_arguments_options[@]}" \
 '-I+[ID range]:ID_RANGE: ' \
 '--id-range=[ID range]:ID_RANGE: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
-'-f+[Schema file]:FILE: ' \
-'--file=[Schema file]:FILE: ' \
+'-s+[Schema file]:SCHEMA: ' \
+'--schema=[Schema file]:SCHEMA: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':group -- Target group name:' \
@@ -51,8 +48,8 @@ _arguments "${_arguments_options[@]}" \
 '--time-range=[Label time range]:TIME_RANGE: ' \
 '--limit=[Max entries to generate]:LIMIT: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
-'-f+[Schema file]:FILE: ' \
-'--file=[Schema file]:FILE: ' \
+'-s+[Schema file]:SCHEMA: ' \
+'--schema=[Schema file]:SCHEMA: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':label -- Target label name:' \
@@ -60,19 +57,24 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (schema)
 _arguments "${_arguments_options[@]}" \
-'--seed=[Seed for the random generator]:SEED: ' \
-'-f+[Schema file]:FILE: ' \
-'--file=[Schema file]:FILE: ' \
+'-s+[Schema file]:SCHEMA: ' \
+'--schema=[Schema file]:SCHEMA: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-'::schema-type:(oom_store)' \
+'::category:(oom_store)' \
+&& ret=0
+;;
+(list)
+_arguments "${_arguments_options[@]}" \
+'-s+[Schema file]:SCHEMA: ' \
+'--schema=[Schema file]:SCHEMA: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':category:(label group)' \
 && ret=0
 ;;
 (completion)
 _arguments "${_arguments_options[@]}" \
-'--seed=[Seed for the random generator]:SEED: ' \
-'-f+[Schema file]:FILE: ' \
-'--file=[Schema file]:FILE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 ':shell -- Target shell name:(bash elvish fish powershell zsh)' \
@@ -80,9 +82,6 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (help)
 _arguments "${_arguments_options[@]}" \
-'--seed=[Seed for the random generator]:SEED: ' \
-'-f+[Schema file]:FILE: ' \
-'--file=[Schema file]:FILE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
 && ret=0
@@ -98,6 +97,7 @@ _ffgen_commands() {
 'group:Generate feature group data' \
 'label:Generate feature label data' \
 'schema:Generate oomstore schema' \
+'list:' \
 'completion:Generate shell completion file' \
 'help:Print this message or the help of the given subcommand(s)' \
     )
@@ -122,6 +122,11 @@ _ffgen__help_commands() {
 _ffgen__label_commands() {
     local commands; commands=()
     _describe -t commands 'ffgen label commands' commands "$@"
+}
+(( $+functions[_ffgen__list_commands] )) ||
+_ffgen__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'ffgen list commands' commands "$@"
 }
 (( $+functions[_ffgen__schema_commands] )) ||
 _ffgen__schema_commands() {

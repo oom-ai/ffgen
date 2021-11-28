@@ -24,6 +24,9 @@ _ffgen() {
             label)
                 cmd+="__label"
                 ;;
+            list)
+                cmd+="__list"
+                ;;
             schema)
                 cmd+="__schema"
                 ;;
@@ -34,24 +37,12 @@ _ffgen() {
 
     case "${cmd}" in
         ffgen)
-            opts="-h -V -f --help --version --seed --file group label schema completion help"
+            opts="-h -V --help --version group label schema list completion help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --seed)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
-                --file)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
-                -f)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -60,24 +51,12 @@ _ffgen() {
             return 0
             ;;
         ffgen__completion)
-            opts="-h -f --help --seed --file bash elvish fish powershell zsh"
+            opts="-h --help bash elvish fish powershell zsh"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --seed)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
-                --file)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
-                -f)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -86,7 +65,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__group)
-            opts="-I -h -f --id-range --help --seed --file <GROUP>"
+            opts="-I -s -h --id-range --seed --schema --help <GROUP>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -104,11 +83,11 @@ _ffgen() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --file)
+                --schema)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                -f)
+                -s)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -120,24 +99,12 @@ _ffgen() {
             return 0
             ;;
         ffgen__help)
-            opts="-h -f --help --seed --file"
+            opts="-h --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --seed)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
-                --file)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
-                -f)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -146,7 +113,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__label)
-            opts="-I -T -h -f --id-range --time-range --limit --help --seed --file <LABEL>"
+            opts="-I -T -s -h --id-range --time-range --limit --seed --schema --help <LABEL>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -176,11 +143,33 @@ _ffgen() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --file)
+                --schema)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                -f)
+                -s)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        ffgen__list)
+            opts="-s -h --schema --help label group"
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                --schema)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -s)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -192,21 +181,17 @@ _ffgen() {
             return 0
             ;;
         ffgen__schema)
-            opts="-h -f --help --seed --file oom_store"
+            opts="-s -h --schema --help oom_store"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
-                --seed)
+                --schema)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --file)
-                    COMPREPLY=($(compgen -f "${cur}"))
-                    return 0
-                    ;;
-                -f)
+                -s)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;

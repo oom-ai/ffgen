@@ -18,9 +18,6 @@ set edit:completion:arg-completer[ffgen] = [@words]{
     }
     var completions = [
         &'ffgen'= {
-            cand --seed 'Seed for the random generator'
-            cand -f 'Schema file'
-            cand --file 'Schema file'
             cand -h 'Print help information'
             cand --help 'Print help information'
             cand -V 'Print version information'
@@ -28,6 +25,7 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand group 'Generate feature group data'
             cand label 'Generate feature label data'
             cand schema 'Generate oomstore schema'
+            cand list 'list'
             cand completion 'Generate shell completion file'
             cand help 'Print this message or the help of the given subcommand(s)'
         }
@@ -35,8 +33,8 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand -I 'ID range'
             cand --id-range 'ID range'
             cand --seed 'Seed for the random generator'
-            cand -f 'Schema file'
-            cand --file 'Schema file'
+            cand -s 'Schema file'
+            cand --schema 'Schema file'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
@@ -47,29 +45,28 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --time-range 'Label time range'
             cand --limit 'Max entries to generate'
             cand --seed 'Seed for the random generator'
-            cand -f 'Schema file'
-            cand --file 'Schema file'
+            cand -s 'Schema file'
+            cand --schema 'Schema file'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
         &'ffgen;schema'= {
-            cand --seed 'Seed for the random generator'
-            cand -f 'Schema file'
-            cand --file 'Schema file'
+            cand -s 'Schema file'
+            cand --schema 'Schema file'
+            cand -h 'Print help information'
+            cand --help 'Print help information'
+        }
+        &'ffgen;list'= {
+            cand -s 'Schema file'
+            cand --schema 'Schema file'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
         &'ffgen;completion'= {
-            cand --seed 'Seed for the random generator'
-            cand -f 'Schema file'
-            cand --file 'Schema file'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }
         &'ffgen;help'= {
-            cand --seed 'Seed for the random generator'
-            cand -f 'Schema file'
-            cand --file 'Schema file'
             cand -h 'Print help information'
             cand --help 'Print help information'
         }

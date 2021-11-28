@@ -1,5 +1,5 @@
 use chrono::{NaiveDate, NaiveDateTime};
-use clap::{self, crate_authors, crate_description, crate_version, lazy_static::lazy_static, Parser};
+use clap::{self, crate_authors, crate_description, crate_version, lazy_static::lazy_static, Args, Parser};
 use clap_generate::Shell;
 use std::path::PathBuf;
 use strum::{EnumString, EnumVariantNames, VariantNames};
@@ -15,14 +15,20 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync 
 pub struct Opt {
     #[clap(subcommand)]
     pub subcommand: Subcommand,
+}
 
+#[derive(Debug, Args)]
+pub struct RandOpt {
     /// Seed for the random generator
-    #[clap(long, global = true, display_order = 100)]
+    #[clap(long, display_order = 100)]
     pub seed: Option<u64>,
+}
 
+#[derive(Debug, Args)]
+pub struct SchemaOpt {
     /// Schema file
-    #[clap(short, long, global = true)]
-    pub file: Option<PathBuf>,
+    #[clap(short, long)]
+    pub schema: PathBuf,
 }
 
 #[derive(Debug, Parser)]
@@ -37,6 +43,12 @@ pub enum Subcommand {
         /// ID range
         #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), display_order = 1)]
         id_range: Option<(i64, i64)>,
+
+        #[clap(flatten)]
+        rand: RandOpt,
+
+        #[clap(flatten)]
+        schema: SchemaOpt,
     },
 
     /// Generate feature label data
@@ -57,13 +69,31 @@ pub enum Subcommand {
         /// Max entries to generate
         #[clap(long, default_value = "10", display_order = 3)]
         limit: usize,
+
+        #[clap(flatten)]
+        rand: RandOpt,
+
+        #[clap(flatten)]
+        schema: SchemaOpt,
     },
 
     /// Generate oomstore schema
     #[clap(display_order = 3)]
     Schema {
-        #[clap(possible_values = SchemaType::VARIANTS, default_value = SchemaType::VARIANTS[0])]
-        schema_type: SchemaType,
+        #[clap(possible_values = SchemaCategory::VARIANTS, default_value = SchemaCategory::VARIANTS[0])]
+        category: SchemaCategory,
+
+        #[clap(flatten)]
+        schema: SchemaOpt,
+    },
+
+    #[clap(display_order = 4)]
+    List {
+        #[clap(possible_values = ListCategory::VARIANTS)]
+        category: ListCategory,
+
+        #[clap(flatten)]
+        schema: SchemaOpt,
     },
 
     #[clap(display_order = 100)]
@@ -77,8 +107,15 @@ pub enum Subcommand {
 
 #[derive(EnumString, EnumVariantNames, Debug)]
 #[strum(serialize_all = "snake_case")]
-pub enum SchemaType {
+pub enum SchemaCategory {
     OomStore,
+}
+
+#[derive(EnumString, EnumVariantNames, Debug)]
+#[strum(serialize_all = "snake_case")]
+pub enum ListCategory {
+    Label,
+    Group,
 }
 
 fn parse_i64_range(s: &str) -> Result<(i64, i64)> {

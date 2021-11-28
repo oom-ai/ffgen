@@ -5,11 +5,10 @@ mod schema;
 use clap::{IntoApp, Parser};
 use cli::*;
 use rand::prelude::*;
-use schema::{oomstore, Schema};
+use schema::Schema;
 use std::{
     fs::File,
-    io::{self, BufRead, BufReader},
-    path::PathBuf,
+    io::{self, BufReader},
 };
 
 fn main() {
@@ -26,18 +25,18 @@ fn main() {
 
 fn try_main() -> anyhow::Result<()> {
     let opt = Opt::parse();
-    let seed = opt.seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
-    let rng = &mut StdRng::seed_from_u64(seed);
 
     match opt.subcommand {
-        Subcommand::Group { group, id_range } => {
-            let schema = parse_schema(opt.file)?;
-            core::generate_group_data(rng, &schema, &group, id_range.as_ref(), io::stdout())?;
+        Subcommand::Group { group, id_range, rand: rand_opts, schema } => {
+            let schema: Schema = schema.try_into()?;
+            let mut rng: StdRng = rand_opts.into();
+            core::generate_group_data(&mut rng, &schema, &group, id_range.as_ref(), io::stdout())?;
         }
-        Subcommand::Label { label, time_range, limit, id_range } => {
-            let schema = parse_schema(opt.file)?;
+        Subcommand::Label { label, time_range, limit, id_range, rand: rand_opts, schema } => {
+            let schema: Schema = schema.try_into()?;
+            let mut rng: StdRng = rand_opts.into();
             core::generate_label_data(
-                rng,
+                &mut rng,
                 &schema,
                 &label,
                 &time_range,
@@ -46,10 +45,16 @@ fn try_main() -> anyhow::Result<()> {
                 io::stdout(),
             )?;
         }
-        Subcommand::Schema { schema_type: SchemaType::OomStore } => {
-            let schema = parse_schema(opt.file)?;
-            let oomstore_schema: oomstore::Entity = schema.into();
-            println!("{}", serde_yaml::to_string(&oomstore_schema)?);
+        Subcommand::Schema { category: SchemaCategory::OomStore, schema } => {
+            let schema: Schema = schema.try_into()?;
+            println!("{}", serde_yaml::to_string(&schema)?);
+        }
+        Subcommand::List { category, schema } => {
+            let schema: Schema = schema.try_into()?;
+            match category {
+                ListCategory::Label => schema.labels.iter().for_each(|l| println!("{}", l.name)),
+                ListCategory::Group => schema.groups.iter().for_each(|g| println!("{}", g.name)),
+            }
         }
         Subcommand::Completion { shell } => {
             let app = &mut Opt::into_app();
@@ -59,10 +64,17 @@ fn try_main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn parse_schema(path: Option<PathBuf>) -> anyhow::Result<Schema> {
-    let reader: Box<dyn BufRead> = match path {
-        Some(path) => Box::new(BufReader::new(File::open(path)?)),
-        None => Box::new(BufReader::new(io::stdin())),
-    };
-    Ok(serde_yaml::from_reader(reader)?)
+impl From<RandOpt> for StdRng {
+    fn from(opt: RandOpt) -> Self {
+        let seed = opt.seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
+        StdRng::seed_from_u64(seed)
+    }
+}
+
+impl TryFrom<SchemaOpt> for Schema {
+    type Error = anyhow::Error;
+    fn try_from(opt: SchemaOpt) -> Result<Self, Self::Error> {
+        let file = File::open(opt.schema)?;
+        Ok(serde_yaml::from_reader(BufReader::new(file))?)
+    }
 }
