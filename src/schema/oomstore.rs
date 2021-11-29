@@ -52,6 +52,7 @@ impl From<Recipe> for Entity {
                                 RandGen::State => "text".into(),
                                 RandGen::Enum { .. } => "text".into(),
                                 RandGen::Timestamp { .. } => "int8".into(),
+                                RandGen::Float { .. } => "float8".into(),
                             },
                             description:   f.description,
                         })

@@ -75,6 +75,7 @@ impl Entity {
 pub struct Group {
     pub name:        String,
     pub description: Option<String>,
+    #[serde(default)]
     pub features:    Vec<Feature>,
 }
 
@@ -88,11 +89,32 @@ pub struct Feature {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all(deserialize = "snake_case"))]
 pub enum RandGen {
-    Int { from: i64, to: i64 },
-    Bool { prob: f64 },
+    Int {
+        from: i64,
+        to:   i64,
+    },
+    Float {
+        from: f64,
+        to:   f64,
+
+        #[serde(default = "randgen_float_precision_default")]
+        precision: usize,
+    },
+    Bool {
+        prob: f64,
+    },
     State,
-    Enum { values: Vec<String> },
-    Timestamp { from: NaiveDateTime, to: NaiveDateTime },
+    Enum {
+        values: Vec<String>,
+    },
+    Timestamp {
+        from: NaiveDateTime,
+        to:   NaiveDateTime,
+    },
+}
+
+fn randgen_float_precision_default() -> usize {
+    3
 }
 
 impl RandGen {
@@ -103,6 +125,11 @@ impl RandGen {
             RandGen::State => Box::new(StateName().fake_with_rng::<String, _>(rng)),
             RandGen::Enum { values } => Box::new(values.choose(rng).cloned()),
             RandGen::Timestamp { from, to } => Box::new(rng.gen_range(from.timestamp()..=to.timestamp())),
+            RandGen::Float { from, to, precision } => {
+                let x = rng.gen_range(*from..=*to);
+                let factor = 10_u64.pow(*precision as u32) as f64;
+                Box::new((x * factor).round() / factor)
+            }
         }
     }
 }
