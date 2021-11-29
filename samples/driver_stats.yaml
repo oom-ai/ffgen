@@ -1,0 +1,22 @@
+entity:
+  name: driver
+groups:
+  - name: driver_stats
+    features:
+      - name: conv_rate
+        rand_gen:
+          type: float
+          from: 0
+          to: 1
+      - name: acc_rate
+        rand_gen:
+          type: float
+          from: 0
+          to: 1
+      - name: avg_daily_trips
+        rand_gen:
+          type: int
+          from: 10
+          to: 1000
+labels:
+  - name: simple
