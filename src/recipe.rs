@@ -19,12 +19,15 @@ pub struct Recipe {
 pub struct Entity {
     pub name:        String,
     pub description: Option<String>,
+
     #[serde(default = "default_entity_seq_range")]
-    pub seq_range:   RangeInclusive<i64>,
+    pub seq_range: RangeInclusive<i64>,
+
     #[serde(default = "default_entity_time_range")]
-    pub time_range:  RangeInclusive<NaiveDateTime>,
-    #[serde(default = "entity_seq_gen_default")]
-    pub seq_gen:     SeqGen,
+    pub time_range: RangeInclusive<NaiveDateTime>,
+
+    #[serde(default = "entity_id_type_default")]
+    pub id_type: EntityIdType,
 }
 
 fn default_entity_seq_range() -> RangeInclusive<i64> {
@@ -35,16 +38,36 @@ fn default_entity_time_range() -> RangeInclusive<NaiveDateTime> {
     let start = end - chrono::Duration::days(1);
     start..=end
 }
-fn entity_seq_gen_default() -> SeqGen {
-    SeqGen::Int
+fn entity_id_type_default() -> EntityIdType {
+    EntityIdType::Int
 }
 
 impl Entity {
     pub fn len(&self) -> usize {
-        match self.seq_gen {
-            SeqGen::Int => self.seq_range.end().to_string().len(),
-            SeqGen::Md5 => 32,
+        match self.id_type {
+            EntityIdType::Int => self.seq_range.end().to_string().len(),
+            EntityIdType::Md5 => 32,
         }
+    }
+
+    pub fn seq(&self, value: i64) -> Box<dyn erased_serde::Serialize> {
+        match self.id_type {
+            EntityIdType::Int => Box::new(value),
+            EntityIdType::Md5 => {
+                use md5::Digest;
+                Box::new(format!("{:x}", md5::Md5::digest(&value.to_be_bytes())))
+            }
+        }
+    }
+
+    pub fn rand_id<R: Rng + ?Sized>(&self, rng: &mut R) -> Box<dyn erased_serde::Serialize> {
+        Box::new(self.seq(rng.gen_range(self.seq_range.clone())))
+    }
+
+    pub fn rand_ts<R: Rng + ?Sized>(&self, rng: &mut R) -> Box<dyn erased_serde::Serialize> {
+        let start = self.time_range.start().timestamp();
+        let end = self.time_range.end().timestamp();
+        Box::new(rng.gen_range(start..=end))
     }
 }
 
@@ -85,22 +108,10 @@ impl RandGen {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all(deserialize = "snake_case"))]
-pub enum SeqGen {
+#[serde(rename_all(deserialize = "snake_case"))]
+pub enum EntityIdType {
     Int,
     Md5,
-}
-
-impl SeqGen {
-    pub fn gen(&self, value: i64) -> Box<dyn erased_serde::Serialize> {
-        match self {
-            Self::Int => Box::new(value),
-            Self::Md5 => {
-                use md5::Digest;
-                Box::new(format!("{:x}", md5::Md5::digest(&value.to_be_bytes())))
-            }
-        }
-    }
 }
 
 pub trait DataIter = Iterator<Item = Vec<Box<dyn erased_serde::Serialize>>>;
@@ -128,7 +139,7 @@ impl Recipe {
             .collect::<Vec<_>>();
 
         let data_iter = self.entity.seq_range.clone().map(|i| {
-            once(self.entity.seq_gen.gen(i))
+            once(self.entity.seq(i))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
                 .collect::<Vec<_>>()
         });
@@ -157,13 +168,9 @@ impl Recipe {
             .chain(features.iter().map(|f| f.name.as_str()))
             .collect::<Vec<_>>();
 
-        let ts_gen = RandGen::Timestamp {
-            from: *self.entity.time_range.start(),
-            to:   *self.entity.time_range.end(),
-        };
         let data_iter = repeat(()).map(move |_| {
-            once(self.entity.seq_gen.gen(rng.gen_range(self.entity.seq_range.clone())))
-                .chain(once(ts_gen.gen(rng)))
+            once(self.entity.rand_id(rng))
+                .chain(once(self.entity.rand_ts(rng)))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
                 .collect::<Vec<_>>()
         });
