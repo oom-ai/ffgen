@@ -40,7 +40,7 @@ _arguments "${_arguments_options[@]}" \
 '--format=[Data format]:FORMAT:(csv json yaml)' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-':group -- Target group name:' \
+'::group -- Target group name:' \
 && ret=0
 ;;
 (label)
@@ -59,7 +59,7 @@ _arguments "${_arguments_options[@]}" \
 '--format=[Data format]:FORMAT:(csv json yaml)' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-':group -- Target group name:' \
+'::group -- Target group name:' \
 && ret=0
 ;;
 (schema)

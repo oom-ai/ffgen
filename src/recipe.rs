@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Error, Result};
 use chrono::NaiveDateTime;
 use fake::{faker::address::en::StateName, Fake};
 use rand::{prelude::SliceRandom, Rng};
@@ -146,26 +146,21 @@ impl Recipe {
     pub fn generate_group_data<'a>(
         &'a self,
         rng: &'a mut (impl Rng + ?Sized),
-        group: &str,
+        group: Option<&str>,
     ) -> Result<(Vec<&str>, impl DataIter + 'a)> {
-        let features = &self
-            .groups
-            .iter()
-            .find(|g| g.name == group)
-            .ok_or_else(|| {
-                anyhow!(
-                    "group not found int recipe. possible_values = {:?}",
-                    self.groups.iter().map(|g| &g.name).collect::<Vec<_>>()
-                )
-            })?
-            .features;
+        let group = match group {
+            Some(group) => self.groups.iter().find(|g| g.name == group),
+            None => self.groups.get(0),
+        };
+        let features = &group.ok_or_else(|| error_group_not_found(&self.groups))?.features;
+        let entity = &self.entity;
 
-        let header = once(self.entity.name.as_str())
+        let header = once(entity.name.as_str())
             .chain(features.iter().map(|f| f.name.as_str()))
             .collect::<Vec<_>>();
 
-        let data_iter = self.entity.seq_range.clone().map(|i| {
-            once(self.entity.seq(i))
+        let data_iter = entity.seq_range.clone().map(|i| {
+            once(entity.seq(i))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
                 .collect::<Vec<_>>()
         });
@@ -175,31 +170,38 @@ impl Recipe {
     pub fn generate_label_data<'a>(
         &'a self,
         rng: &'a mut (impl Rng + ?Sized),
-        group: &str,
+        group: Option<&str>,
     ) -> Result<(Vec<&str>, impl DataIter + 'a)> {
-        let features = &self
-            .groups
-            .iter()
-            .find(|l| l.name == group)
-            .ok_or_else(|| {
-                anyhow!(
-                    "label not found int self. possible_values = {:?}",
-                    self.groups.iter().map(|g| &g.name).collect::<Vec<_>>()
-                )
-            })?
-            .features;
+        let groups = &self.groups;
+        let features = match group {
+            Some(group) =>
+                &groups
+                    .iter()
+                    .find(|g| g.name == group)
+                    .ok_or_else(|| error_group_not_found(groups))?
+                    .features,
+            None => <&[Feature]>::default(),
+        };
+        let entity = &self.entity;
 
-        let header = once(self.entity.name.as_str())
+        let header = once(entity.name.as_str())
             .chain(once("timestamp"))
             .chain(features.iter().map(|f| f.name.as_str()))
             .collect::<Vec<_>>();
 
         let data_iter = repeat(()).map(move |_| {
-            once(self.entity.rand_id(rng))
-                .chain(once(self.entity.rand_ts(rng)))
+            once(entity.rand_id(rng))
+                .chain(once(entity.rand_ts(rng)))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
                 .collect::<Vec<_>>()
         });
         Ok((header, data_iter))
     }
+}
+
+fn error_group_not_found(groups: &[Group]) -> Error {
+    anyhow!(
+        "group not found in recipe. possible_values = {:?}",
+        groups.iter().map(|g| &g.name).collect::<Vec<_>>()
+    )
 }

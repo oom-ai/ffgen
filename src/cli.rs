@@ -17,7 +17,7 @@ pub enum Opt {
     Group {
         /// Target group name
         #[clap()]
-        group: String,
+        group: Option<String>,
 
         /// ID range
         #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), display_order = 1)]
@@ -38,7 +38,7 @@ pub enum Opt {
     Label {
         /// Target group name
         #[clap()]
-        group: String,
+        group: Option<String>,
 
         /// ID range
         #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), display_order = 1)]

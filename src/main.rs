@@ -34,7 +34,7 @@ fn try_main() -> Result<()> {
                 recipe.entity.seq_range = from..=to
             }
 
-            let (header, data_iter) = recipe.generate_group_data(&mut rng, &group)?;
+            let (header, data_iter) = recipe.generate_group_data(&mut rng, group.as_deref())?;
             format.serialize(&header, data_iter, wtr)?;
         }
         Opt::Label { group, time_range, limit, id_range, rand, recipe, format } => {
@@ -47,7 +47,7 @@ fn try_main() -> Result<()> {
                 recipe.entity.time_range = from..=to
             }
 
-            let (header, data_iter) = recipe.generate_label_data(&mut rng, &group)?;
+            let (header, data_iter) = recipe.generate_label_data(&mut rng, group.as_deref())?;
             format.serialize(&header, data_iter.take(limit), wtr)?;
         }
         Opt::Schema { category: SchemaCategory::Oomstore, recipe, format } => {
