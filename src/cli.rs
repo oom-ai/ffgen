@@ -36,9 +36,9 @@ pub enum Opt {
     /// Generate feature label data
     #[clap(display_order = 2)]
     Label {
-        /// Target label name
+        /// Target group name
         #[clap()]
-        label: String,
+        group: String,
 
         /// ID range
         #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), display_order = 1)]
@@ -79,10 +79,6 @@ pub enum Opt {
     /// List available resources
     #[clap(display_order = 4)]
     List {
-        /// Resource category
-        #[clap(possible_values = ListCategory::VARIANTS)]
-        category: ListCategory,
-
         #[clap(flatten)]
         recipe: RecipeOpt,
     },

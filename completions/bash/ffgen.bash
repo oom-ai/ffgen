@@ -125,7 +125,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__label)
-            opts="-I -T -l -s -r -f -h --id-range --time-range --limit --seed --recipe --format --help <LABEL>"
+            opts="-I -T -l -s -r -f -h --id-range --time-range --limit --seed --recipe --format --help <GROUP>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -187,7 +187,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__list)
-            opts="-r -h --recipe --help label group"
+            opts="-r -h --recipe --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0

@@ -12,7 +12,6 @@ use std::{
 pub struct Recipe {
     pub entity: Entity,
     pub groups: Vec<Group>,
-    pub labels: Vec<Group>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -176,16 +175,16 @@ impl Recipe {
     pub fn generate_label_data<'a>(
         &'a self,
         rng: &'a mut (impl Rng + ?Sized),
-        label: &str,
+        group: &str,
     ) -> Result<(Vec<&str>, impl DataIter + 'a)> {
         let features = &self
-            .labels
+            .groups
             .iter()
-            .find(|l| l.name == label)
+            .find(|l| l.name == group)
             .ok_or_else(|| {
                 anyhow!(
                     "label not found int self. possible_values = {:?}",
-                    self.labels.iter().map(|g| &g.name).collect::<Vec<_>>()
+                    self.groups.iter().map(|g| &g.name).collect::<Vec<_>>()
                 )
             })?
             .features;

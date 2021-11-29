@@ -35,11 +35,3 @@ groups:
           type: int
           from: 14
           to: 80
-labels:
-  - name: simple
-    description: 'basic label'
-    features:
-      - name: gender
-        rand_gen:
-          type: enum
-          values: ["F", "M"]

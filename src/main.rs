@@ -37,7 +37,7 @@ fn try_main() -> Result<()> {
             let (header, data_iter) = recipe.generate_group_data(&mut rng, &group)?;
             format.serialize(&header, data_iter, wtr)?;
         }
-        Opt::Label { label, time_range, limit, id_range, rand, recipe, format } => {
+        Opt::Label { group, time_range, limit, id_range, rand, recipe, format } => {
             let mut rng: StdRng = rand.into();
             let mut recipe: Recipe = recipe.try_into()?;
             if let Some((from, to)) = id_range {
@@ -47,7 +47,7 @@ fn try_main() -> Result<()> {
                 recipe.entity.time_range = from..=to
             }
 
-            let (header, data_iter) = recipe.generate_label_data(&mut rng, &label)?;
+            let (header, data_iter) = recipe.generate_label_data(&mut rng, &group)?;
             format.serialize(&header, data_iter.take(limit), wtr)?;
         }
         Opt::Schema { category: SchemaCategory::Oomstore, recipe, format } => {
@@ -55,12 +55,9 @@ fn try_main() -> Result<()> {
             let schema: schema::oomstore::Schema = recipe.try_into()?;
             format.serialize(&schema, wtr)?;
         }
-        Opt::List { category, recipe } => {
+        Opt::List { recipe } => {
             let recipe: Recipe = recipe.try_into()?;
-            match category {
-                ListCategory::Label => recipe.labels.iter().try_for_each(|l| writeln!(wtr, "{}", l.name))?,
-                ListCategory::Group => recipe.groups.iter().try_for_each(|g| writeln!(wtr, "{}", g.name))?,
-            }
+            recipe.groups.iter().try_for_each(|l| writeln!(wtr, "{}", l.name))?
         }
         Opt::Completion { shell } => {
             let app = &mut Opt::into_app();

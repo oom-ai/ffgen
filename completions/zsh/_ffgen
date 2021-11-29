@@ -59,7 +59,7 @@ _arguments "${_arguments_options[@]}" \
 '--format=[Data format]:FORMAT:(csv json yaml)' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-':label -- Target label name:' \
+':group -- Target group name:' \
 && ret=0
 ;;
 (schema)
@@ -78,7 +78,6 @@ _arguments "${_arguments_options[@]}" \
 '--recipe=[Recipe file path]:RECIPE: ' \
 '-h[Print help information]' \
 '--help[Print help information]' \
-':category -- Resource category:(label group)' \
 && ret=0
 ;;
 (completion)
