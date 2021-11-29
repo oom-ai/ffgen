@@ -53,6 +53,7 @@ impl From<Recipe> for Entity {
                                 RandGen::Enum { .. } => "text".into(),
                                 RandGen::Timestamp { .. } => "int8".into(),
                                 RandGen::Float { .. } => "float8".into(),
+                                RandGen::DateTime { .. } => "timestamp".into(),
                             },
                             description:   f.description,
                         })

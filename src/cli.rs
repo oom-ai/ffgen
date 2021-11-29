@@ -1,5 +1,5 @@
-use anyhow::{bail, Result};
-use chrono::{NaiveDate, NaiveDateTime};
+use anyhow::{bail, Error, Result};
+use chrono::{DateTime, NaiveDate, NaiveDateTime, TimeZone, Utc};
 use clap::{self, crate_authors, crate_description, crate_version, Args, Parser};
 use clap_generate::Shell;
 use std::path::PathBuf;
@@ -46,7 +46,7 @@ pub enum Opt {
 
         /// Label time range
         #[clap(long, short = 'T', parse(try_from_str = parse_datetime_range), display_order = 2)]
-        time_range: Option<(NaiveDateTime, NaiveDateTime)>,
+        time_range: Option<(DateTime<Utc>, DateTime<Utc>)>,
 
         /// Max entries to generate
         #[clap(short, long, default_value = "10", display_order = 3)]
@@ -153,8 +153,8 @@ fn parse_i64_range(s: &str) -> Result<(i64, i64)> {
     parse_range(s, "..", |s| Ok(s.parse()?))
 }
 
-fn parse_datetime_range(s: &str) -> Result<(NaiveDateTime, NaiveDateTime)> {
-    parse_range(s, "..", parse_datetime)
+fn parse_datetime_range(s: &str) -> Result<(DateTime<Utc>, DateTime<Utc>)> {
+    parse_range(s, "..", parse_utc_datetime)
 }
 
 fn parse_range<T>(s: &str, delimiter: &str, parse: fn(&str) -> Result<T>) -> Result<(T, T)> {
@@ -164,7 +164,13 @@ fn parse_range<T>(s: &str, delimiter: &str, parse: fn(&str) -> Result<T>) -> Res
     }
 }
 
-fn parse_datetime(s: &str) -> Result<NaiveDateTime> {
+fn parse_utc_datetime(s: &str) -> Result<DateTime<Utc>> {
+    s.parse()
+        .or_else(|_| Ok(Utc.timestamp_millis(s.parse()?)))
+        .or_else(|_: Error| Ok(Utc.from_utc_datetime(&parse_naive_datetime(s)?)))
+}
+
+fn parse_naive_datetime(s: &str) -> Result<NaiveDateTime> {
     s.parse()
         .or_else(|_| NaiveDateTime::parse_from_str(s, "%Y-%m-%d %H:%M:%S"))
         .or_else(|_| NaiveDate::parse_from_str(s, "%Y-%m-%d").map(|d| d.and_hms(0, 0, 0)))

@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Error, Result};
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use fake::{faker::address::en::StateName, Fake};
 use rand::{prelude::SliceRandom, Rng};
 use serde::{Deserialize, Serialize};
@@ -19,21 +19,21 @@ pub struct Entity {
     pub name:        String,
     pub description: Option<String>,
 
-    #[serde(default = "default_entity_seq_range")]
-    pub seq_range: RangeInclusive<i64>,
+    #[serde(default = "default_entity_id_range")]
+    pub id_range: RangeInclusive<i64>,
 
     #[serde(default = "default_entity_time_range")]
-    pub time_range: RangeInclusive<NaiveDateTime>,
+    pub time_range: RangeInclusive<DateTime<Utc>>,
 
     #[serde(default = "entity_id_type_default")]
     pub id_type: EntityIdType,
 }
 
-fn default_entity_seq_range() -> RangeInclusive<i64> {
+fn default_entity_id_range() -> RangeInclusive<i64> {
     1..=10
 }
-fn default_entity_time_range() -> RangeInclusive<NaiveDateTime> {
-    let end = chrono::Local::now().naive_local();
+fn default_entity_time_range() -> RangeInclusive<DateTime<Utc>> {
+    let end = chrono::Utc::now();
     let start = end - chrono::Duration::days(1);
     start..=end
 }
@@ -44,12 +44,12 @@ fn entity_id_type_default() -> EntityIdType {
 impl Entity {
     pub fn len(&self) -> usize {
         match self.id_type {
-            EntityIdType::Int => self.seq_range.end().to_string().len(),
+            EntityIdType::Int => self.id_range.end().to_string().len(),
             EntityIdType::Md5 => 32,
         }
     }
 
-    pub fn seq(&self, value: i64) -> Box<dyn erased_serde::Serialize> {
+    pub fn id(&self, value: i64) -> Box<dyn erased_serde::Serialize> {
         match self.id_type {
             EntityIdType::Int => Box::new(value),
             EntityIdType::Md5 => {
@@ -60,7 +60,7 @@ impl Entity {
     }
 
     pub fn rand_id<R: Rng + ?Sized>(&self, rng: &mut R) -> Box<dyn erased_serde::Serialize> {
-        Box::new(self.seq(rng.gen_range(self.seq_range.clone())))
+        Box::new(self.id(rng.gen_range(self.id_range.clone())))
     }
 
     pub fn rand_ts<R: Rng + ?Sized>(&self, rng: &mut R) -> Box<dyn erased_serde::Serialize> {
@@ -107,8 +107,12 @@ pub enum RandGen {
         values: Vec<String>,
     },
     Timestamp {
-        from: NaiveDateTime,
-        to:   NaiveDateTime,
+        from: DateTime<Utc>,
+        to:   DateTime<Utc>,
+    },
+    DateTime {
+        from: DateTime<Utc>,
+        to:   DateTime<Utc>,
     },
 }
 
@@ -123,11 +127,16 @@ impl RandGen {
             RandGen::Bool { prob } => Box::new(rng.gen_bool(*prob)),
             RandGen::State => Box::new(StateName().fake_with_rng::<String, _>(rng)),
             RandGen::Enum { values } => Box::new(values.choose(rng).cloned()),
-            RandGen::Timestamp { from, to } => Box::new(rng.gen_range(from.timestamp()..=to.timestamp())),
             RandGen::Float { from, to, precision } => {
                 let x = rng.gen_range(*from..=*to);
                 let factor = 10_u64.pow(*precision as u32) as f64;
                 Box::new((x * factor).round() / factor)
+            }
+            RandGen::Timestamp { from, to } => Box::new(rng.gen_range(from.timestamp()..=to.timestamp())),
+            RandGen::DateTime { from, to } => {
+                let diff = *to - *from;
+                let x = rng.gen_range(0..diff.num_milliseconds());
+                Box::new(*from + chrono::Duration::milliseconds(x))
             }
         }
     }
@@ -159,8 +168,8 @@ impl Recipe {
             .chain(features.iter().map(|f| f.name.as_str()))
             .collect::<Vec<_>>();
 
-        let data_iter = entity.seq_range.clone().map(|i| {
-            once(entity.seq(i))
+        let data_iter = entity.id_range.clone().map(|i| {
+            once(entity.id(i))
                 .chain(features.iter().map(|f| f.rand_gen.gen(rng)))
                 .collect::<Vec<_>>()
         });

@@ -31,7 +31,7 @@ fn try_main() -> Result<()> {
             let mut rng: StdRng = rand.into();
             let mut recipe: Recipe = recipe.try_into()?;
             if let Some((from, to)) = id_range {
-                recipe.entity.seq_range = from..=to
+                recipe.entity.id_range = from..=to
             }
 
             let (header, data_iter) = recipe.generate_group_data(&mut rng, group.as_deref())?;
@@ -41,7 +41,7 @@ fn try_main() -> Result<()> {
             let mut rng: StdRng = rand.into();
             let mut recipe: Recipe = recipe.try_into()?;
             if let Some((from, to)) = id_range {
-                recipe.entity.seq_range = from..=to
+                recipe.entity.id_range = from..=to
             }
             if let Some((from, to)) = time_range {
                 recipe.entity.time_range = from..=to
