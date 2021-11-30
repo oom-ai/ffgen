@@ -89,12 +89,12 @@ pub struct Feature {
 #[serde(tag = "type", rename_all(deserialize = "snake_case"))]
 pub enum RandGen {
     Int {
-        from: i64,
-        to:   i64,
+        start: i64,
+        end:   i64,
     },
     Float {
-        from: f64,
-        to:   f64,
+        start: f64,
+        end:   f64,
 
         #[serde(default = "randgen_float_precision_default")]
         precision: usize,
@@ -107,12 +107,12 @@ pub enum RandGen {
         values: Vec<String>,
     },
     Timestamp {
-        from: DateTime<Utc>,
-        to:   DateTime<Utc>,
+        start: DateTime<Utc>,
+        end:   DateTime<Utc>,
     },
     DateTime {
-        from: DateTime<Utc>,
-        to:   DateTime<Utc>,
+        start: DateTime<Utc>,
+        end:   DateTime<Utc>,
     },
 }
 
@@ -123,20 +123,20 @@ fn randgen_float_precision_default() -> usize {
 impl RandGen {
     pub fn gen<R: Rng + ?Sized>(&self, rng: &mut R) -> Box<dyn erased_serde::Serialize> {
         match &self {
-            RandGen::Int { from, to } => Box::new(rng.gen_range(*from..=*to)),
+            RandGen::Int { start, end } => Box::new(rng.gen_range(*start..=*end)),
             RandGen::Bool { prob } => Box::new(rng.gen_bool(*prob)),
             RandGen::State => Box::new(StateName().fake_with_rng::<String, _>(rng)),
             RandGen::Enum { values } => Box::new(values.choose(rng).cloned()),
-            RandGen::Float { from, to, precision } => {
-                let x = rng.gen_range(*from..=*to);
+            RandGen::Float { start, end, precision } => {
+                let x = rng.gen_range(*start..=*end);
                 let factor = 10_u64.pow(*precision as u32) as f64;
                 Box::new((x * factor).round() / factor)
             }
-            RandGen::Timestamp { from, to } => Box::new(rng.gen_range(from.timestamp()..=to.timestamp())),
-            RandGen::DateTime { from, to } => {
-                let diff = *to - *from;
+            RandGen::Timestamp { start, end } => Box::new(rng.gen_range(start.timestamp()..=end.timestamp())),
+            RandGen::DateTime { start, end } => {
+                let diff = *end - *start;
                 let x = rng.gen_range(0..diff.num_milliseconds());
-                Box::new(*from + chrono::Duration::milliseconds(x))
+                Box::new(*start + chrono::Duration::milliseconds(x))
             }
         }
     }

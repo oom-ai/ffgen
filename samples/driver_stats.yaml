@@ -9,15 +9,15 @@ groups:
       - name: conv_rate
         rand_gen:
           type: float
-          from: 0
-          to: 1
+          start: 0
+          end: 1
       - name: acc_rate
         rand_gen:
           type: float
-          from: 0
-          to: 1
+          start: 0
+          end: 1
       - name: avg_daily_trips
         rand_gen:
           type: int
-          from: 10
-          to: 1000
+          start: 10
+          end: 1000

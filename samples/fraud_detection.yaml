@@ -11,13 +11,13 @@ groups:
       - name: credit_score
         rand_gen:
           type: int
-          from: 500
-          to: 750
+          start: 500
+          end: 750
       - name: account_age_days
         rand_gen:
           type: int
-          from: 1
-          to: 1095
+          start: 1
+          end: 1095
       - name: has_2fa_installed
         rand_gen:
           type: bool
@@ -28,10 +28,10 @@ groups:
       - name: transaction_count_7d
         rand_gen:
           type: int
-          from: 0
-          to: 14
+          start: 0
+          end: 14
       - name: transaction_count_30d
         rand_gen:
           type: int
-          from: 14
-          to: 80
+          start: 14
+          end: 80
