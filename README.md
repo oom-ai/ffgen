@@ -30,10 +30,10 @@ $ ffgen group account -r fraud_detection.yaml | csview
 
 **Integration with oomstore**
 ```
-ffgen schema -r driver_stats.yaml | oomcli apply -f /dev/stdin
+$ ffgen schema -r driver_stats.yaml | oomcli apply -f /dev/stdin
 2021/11/30 18:55:26 applied
 
-ffgen group account -r fraud_detection.yaml | oomcli import -g account --input-file /dev/stdin
+$ ffgen group account -r fraud_detection.yaml | oomcli import -g account --input-file /dev/stdin
 2021/11/30 18:56:31 importing features ...
 2021/11/30 18:56:31 succeeded
 RevisionID: 1
