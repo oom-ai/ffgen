@@ -2,6 +2,7 @@
 
 [![CICD](https://github.com/oom-ai/ffgen/actions/workflows/CICD.yml/badge.svg)](https://github.com/oom-ai/ffgen/actions/workflows/CICD.yml)
 [![license](https://img.shields.io/badge/license-%20MIT/Apache--2.0-blue.svg)](https://github.com/oom-ai/ffgen/releases)
+[![crates.io](https://img.shields.io/crates/v/ffgen.svg?colorB=319e8c)](https://crates.io/crates/ffgen)
 [![release](https://img.shields.io/badge/Release-%20Linux%20|%20OSX%20|%20Win%20-orange.svg)](https://github.com/oom-ai/ffgen/releases)
 
 
@@ -10,41 +11,48 @@ A fast **f**ake **f**eature **gen**erator
 ## Example
 
 ```
-$ ffgen list group
-fraud_detection_account
-fraud_detection_transaction_stats
-```
-
-```
-$ ffgen group fraud_detection_account --id-range 1..10 | csview
+$ ffgen group account -r fraud_detection.yaml | csview
 +------+----------------+--------------+------------------+-------------------+
 | user | state          | credit_score | account_age_days | has_2fa_installed |
 +------+----------------+--------------+------------------+-------------------+
-| 1    | New Mexico     | 701          | 69               | true              |
-| 2    | Tennessee      | 575          | 359              | false             |
-| 3    | Massachusetts  | 637          | 33               | false             |
-| 4    | West Virginia  | 608          | 359              | true              |
-| 5    | Alaska         | 687          | 225              | false             |
-| 6    | North Carolina | 665          | 37               | true              |
-| 7    | Idaho          | 698          | 261              | false             |
-| 8    | Texas          | 544          | 299              | true              |
-| 9    | Minnesota      | 640          | 361              | true              |
-| 10   | Minnesota      | 731          | 330              | true              |
+| 1    | North Carolina | 619          | 1082             | true              |
+| 2    | Virginia       | 686          | 596              | true              |
+| 3    | Oregon         | 576          | 960              | false             |
+| 4    | Nevada         | 540          | 1049             | false             |
+| 5    | Massachusetts  | 535          | 229              | true              |
+| 6    | West Virginia  | 537          | 462              | false             |
+| 7    | New York       | 665          | 156              | false             |
+| 8    | Idaho          | 706          | 891              | false             |
+| 9    | Arizona        | 667          | 1068             | true              |
+| 10   | South Carolina | 526          | 541              | true              |
 +------+----------------+--------------+------------------+-------------------+
 ```
 
-**Integration with oomctl**
+**Integration with oomstore**
 ```
-$ ffgen schema fraud_detection | oomctl apply -f /dev/stdin
-2021/11/24 16:23:01 applied
+ffgen schema -r driver_stats.yaml | oomcli apply -f /dev/stdin
+2021/11/30 18:55:26 applied
 
-$ ffgen group fraud_detection_account | oomctl import -g account --input-file /dev/stdin
-2021/11/24 16:23:15 succeeded
-RevisionID: 5
+ffgen group account -r fraud_detection.yaml | oomcli import -g account --input-file /dev/stdin
+2021/11/30 18:56:31 importing features ...
+2021/11/30 18:56:31 succeeded
+RevisionID: 1
 ```
 
 ## Installation
 
+### From binaries
+
 Pre-built versions of `ffgen` for various architectures are available at [Github release page](https://github.com/oom-ai/ffgen/releases).
 
 *Note that you can try the `musl` version (which is statically-linked) if runs into dependency related errors.*
+
+### From source
+
+`ffgen` is also published on [crates.io](https://crates.io). If you have Rust toolchains (nightly) installed you can use `cargo` to install it from source:
+
+```
+cargo install --locked ffgen
+```
+
+If you want the latest version, clone this repository and run `cargo install --path .`.
