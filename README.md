@@ -1,7 +1,7 @@
 # ffgen
 
 [![CICD](https://github.com/oom-ai/ffgen/actions/workflows/CICD.yml/badge.svg)](https://github.com/oom-ai/ffgen/actions/workflows/CICD.yml)
-[![license](https://img.shields.io/badge/license-%20MIT/Apache--2.0-blue.svg)](https://github.com/oom-ai/ffgen/releases)
+![license](https://img.shields.io/badge/license-%20MIT/Apache--2.0-blue.svg)
 [![crates.io](https://img.shields.io/crates/v/ffgen.svg?colorB=319e8c)](https://crates.io/crates/ffgen)
 [![release](https://img.shields.io/badge/Release-%20Linux%20|%20OSX%20|%20Win%20-orange.svg)](https://github.com/oom-ai/ffgen/releases)
 
