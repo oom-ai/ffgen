@@ -1,6 +1,6 @@
 use anyhow::{bail, Error, Result};
 use chrono::{DateTime, NaiveDate, NaiveDateTime, TimeZone, Utc};
-use clap::{self, crate_authors, crate_description, crate_version, Args, Parser};
+use clap::{self, crate_description, crate_version, Args, Parser};
 use clap_generate::Shell;
 use std::path::PathBuf;
 use strum::{EnumString, EnumVariantNames, VariantNames};
@@ -9,7 +9,6 @@ use strum::{EnumString, EnumVariantNames, VariantNames};
 #[clap(
     about = crate_description!(),
     version = crate_version!(),
-    author = crate_authors!(),
 )]
 pub enum Opt {
     /// Generate feature group data
