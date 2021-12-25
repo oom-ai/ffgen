@@ -25,9 +25,9 @@ pub struct Group {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Feature {
-    pub name:          String,
-    pub db_value_type: String,
-    pub description:   Option<String>,
+    pub name:        String,
+    pub value_type:  String,
+    pub description: Option<String>,
 }
 
 impl From<Recipe> for Entity {
@@ -45,17 +45,17 @@ impl From<Recipe> for Entity {
                         .features
                         .into_iter()
                         .map(|f| Feature {
-                            name:          f.name,
-                            db_value_type: match f.rand_gen {
-                                RandGen::Int { .. } => "int8".into(),
+                            name:        f.name,
+                            value_type:  match f.rand_gen {
+                                RandGen::Int { .. } => "int64".into(),
                                 RandGen::Bool { .. } => "bool".into(),
-                                RandGen::State => "text".into(),
-                                RandGen::Enum { .. } => "text".into(),
-                                RandGen::Timestamp { .. } => "int8".into(),
-                                RandGen::Float { .. } => "float8".into(),
-                                RandGen::DateTime { .. } => "timestamp".into(),
+                                RandGen::State => "string".into(),
+                                RandGen::Enum { .. } => "string".into(),
+                                RandGen::Timestamp { .. } => "int64".into(),
+                                RandGen::Float { .. } => "float64".into(),
+                                RandGen::DateTime { .. } => "time".into(),
                             },
-                            description:   f.description,
+                            description: f.description,
                         })
                         .collect(),
                     description: g.description,
