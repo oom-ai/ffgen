@@ -30,8 +30,8 @@ _ffgen() {
         case $line[1] in
             (group)
 _arguments "${_arguments_options[@]}" \
-'-I+[ID range]:ID_RANGE: ' \
-'--id-range=[ID range]:ID_RANGE: ' \
+'-I+[ID range (example: 1000..2000)]:FROM..TO: ' \
+'--id-range=[ID range (example: 1000..2000)]:FROM..TO: ' \
 '-s+[Seed for the random generator]:SEED: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
 '-r+[Recipe file path]:RECIPE: ' \
@@ -45,12 +45,12 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (label)
 _arguments "${_arguments_options[@]}" \
-'-I+[ID range]:ID_RANGE: ' \
-'--id-range=[ID range]:ID_RANGE: ' \
-'-T+[Label time range]:TIME_RANGE: ' \
-'--time-range=[Label time range]:TIME_RANGE: ' \
-'-l+[Max entries to generate]:LIMIT: ' \
-'--limit=[Max entries to generate]:LIMIT: ' \
+'-I+[ID range (example: 1000..2000)]:FROM..TO: ' \
+'--id-range=[ID range (example: 1000..2000)]:FROM..TO: ' \
+'-T+[Label time range (example: 2022-01-01..2022-01-31)]:FROM..TO: ' \
+'--time-range=[Label time range (example: 2022-01-01..2022-01-31)]:FROM..TO: ' \
+'-l+[Max entries to generate]:N: ' \
+'--limit=[Max entries to generate]:N: ' \
 '-s+[Seed for the random generator]:SEED: ' \
 '--seed=[Seed for the random generator]:SEED: ' \
 '-r+[Recipe file path]:RECIPE: ' \

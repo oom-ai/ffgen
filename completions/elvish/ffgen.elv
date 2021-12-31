@@ -30,8 +30,8 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand help 'Print this message or the help of the given subcommand(s)'
         }
         &'ffgen;group'= {
-            cand -I 'ID range'
-            cand --id-range 'ID range'
+            cand -I 'ID range (example: 1000..2000)'
+            cand --id-range 'ID range (example: 1000..2000)'
             cand -s 'Seed for the random generator'
             cand --seed 'Seed for the random generator'
             cand -r 'Recipe file path'
@@ -42,10 +42,10 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --help 'Print help information'
         }
         &'ffgen;label'= {
-            cand -I 'ID range'
-            cand --id-range 'ID range'
-            cand -T 'Label time range'
-            cand --time-range 'Label time range'
+            cand -I 'ID range (example: 1000..2000)'
+            cand --id-range 'ID range (example: 1000..2000)'
+            cand -T 'Label time range (example: 2022-01-01..2022-01-31)'
+            cand --time-range 'Label time range (example: 2022-01-01..2022-01-31)'
             cand -l 'Max entries to generate'
             cand --limit 'Max entries to generate'
             cand -s 'Seed for the random generator'

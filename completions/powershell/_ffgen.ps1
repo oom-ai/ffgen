@@ -33,8 +33,8 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
             break
         }
         'ffgen;group' {
-            [CompletionResult]::new('-I', 'I', [CompletionResultType]::ParameterName, 'ID range')
-            [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'ID range')
+            [CompletionResult]::new('-I', 'I', [CompletionResultType]::ParameterName, 'ID range (example: 1000..2000)')
+            [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'ID range (example: 1000..2000)')
             [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Seed for the random generator')
             [CompletionResult]::new('--seed', 'seed', [CompletionResultType]::ParameterName, 'Seed for the random generator')
             [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'Recipe file path')
@@ -46,10 +46,10 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
             break
         }
         'ffgen;label' {
-            [CompletionResult]::new('-I', 'I', [CompletionResultType]::ParameterName, 'ID range')
-            [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'ID range')
-            [CompletionResult]::new('-T', 'T', [CompletionResultType]::ParameterName, 'Label time range')
-            [CompletionResult]::new('--time-range', 'time-range', [CompletionResultType]::ParameterName, 'Label time range')
+            [CompletionResult]::new('-I', 'I', [CompletionResultType]::ParameterName, 'ID range (example: 1000..2000)')
+            [CompletionResult]::new('--id-range', 'id-range', [CompletionResultType]::ParameterName, 'ID range (example: 1000..2000)')
+            [CompletionResult]::new('-T', 'T', [CompletionResultType]::ParameterName, 'Label time range (example: 2022-01-01..2022-01-31)')
+            [CompletionResult]::new('--time-range', 'time-range', [CompletionResultType]::ParameterName, 'Label time range (example: 2022-01-01..2022-01-31)')
             [CompletionResult]::new('-l', 'l', [CompletionResultType]::ParameterName, 'Max entries to generate')
             [CompletionResult]::new('--limit', 'limit', [CompletionResultType]::ParameterName, 'Max entries to generate')
             [CompletionResult]::new('-s', 's', [CompletionResultType]::ParameterName, 'Seed for the random generator')
