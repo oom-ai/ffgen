@@ -15,7 +15,7 @@ use std::{
 
 impl From<RandOpt> for StdRng {
     fn from(opt: RandOpt) -> Self {
-        let seed = opt.seed.unwrap_or_else(|| chrono::Utc::now().timestamp() as u64);
+        let seed = opt.seed.unwrap_or_else(|| chrono::Utc::now().timestamp_nanos() as u64);
         StdRng::seed_from_u64(seed)
     }
 }

@@ -1,4 +1,4 @@
-use anyhow::{bail, Error, Result};
+use anyhow::{anyhow, bail, Error, Result};
 use chrono::{DateTime, NaiveDate, NaiveDateTime, TimeZone, Utc};
 use clap::{self, crate_description, crate_version, Args, Parser};
 use clap_generate::Shell;
@@ -173,6 +173,5 @@ fn parse_naive_datetime(s: &str) -> Result<NaiveDateTime> {
     s.parse()
         .or_else(|_| NaiveDateTime::parse_from_str(s, "%Y-%m-%d %H:%M:%S"))
         .or_else(|_| NaiveDate::parse_from_str(s, "%Y-%m-%d").map(|d| d.and_hms(0, 0, 0)))
-        .map_err(Box::new)
-        .or_else(|_| Ok(NaiveDateTime::from_timestamp(s.parse::<i64>()?, 0)))
+        .map_err(|e| anyhow!(e))
 }

@@ -64,8 +64,8 @@ impl Entity {
     }
 
     pub fn rand_ts<R: Rng + ?Sized>(&self, rng: &mut R) -> Box<dyn erased_serde::Serialize> {
-        let start = self.time_range.start().timestamp();
-        let end = self.time_range.end().timestamp();
+        let start = self.time_range.start().timestamp_millis();
+        let end = self.time_range.end().timestamp_millis();
         Box::new(rng.gen_range(start..=end))
     }
 }
@@ -123,7 +123,8 @@ impl RandGen {
                 let factor = 10_u64.pow(*precision as u32) as f64;
                 Box::new((x * factor).round() / factor)
             }
-            RandGen::Timestamp(range) => Box::new(rng.gen_range(range.start().timestamp()..=range.end().timestamp())),
+            RandGen::Timestamp(range) =>
+                Box::new(rng.gen_range(range.start().timestamp_millis()..=range.end().timestamp_millis())),
             RandGen::DateTime(range) => {
                 let diff = *range.end() - *range.start();
                 let x = rng.gen_range(0..diff.num_milliseconds());
