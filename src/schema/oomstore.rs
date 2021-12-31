@@ -7,19 +7,20 @@ pub type Schema = Entity;
 #[serde(rename(serialize = "kebab-case"))]
 #[serde(rename_all = "kebab-case")]
 pub struct Entity {
-    pub kind:           String,
-    pub name:           String,
-    pub length:         usize,
-    pub batch_features: Vec<Group>,
-    pub description:    Option<String>,
+    pub kind:        String,
+    pub name:        String,
+    pub length:      usize,
+    pub description: Option<String>,
+    pub groups:      Vec<Group>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Group {
-    pub group:       String,
-    pub features:    Vec<Feature>,
+    pub name:        String,
+    pub category:    String,
     pub description: Option<String>,
+    pub features:    Vec<Feature>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -33,14 +34,15 @@ pub struct Feature {
 impl From<Recipe> for Entity {
     fn from(s: Recipe) -> Self {
         Entity {
-            kind:           "Entity".into(),
-            length:         s.entity.len(),
-            name:           s.entity.name,
-            batch_features: s
+            kind:        "Entity".into(),
+            length:      s.entity.len(),
+            name:        s.entity.name,
+            groups:      s
                 .groups
                 .into_iter()
                 .map(|g| Group {
-                    group:       g.name,
+                    name:        g.name,
+                    category:    "batch".into(),
                     features:    g
                         .features
                         .into_iter()
@@ -61,7 +63,7 @@ impl From<Recipe> for Entity {
                     description: g.description,
                 })
                 .collect(),
-            description:    s.entity.description,
+            description: s.entity.description,
         }
     }
 }
