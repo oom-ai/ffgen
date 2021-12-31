@@ -176,7 +176,7 @@ dependencies = [
 
 [[package]]
 name = "ffgen"
-version = "0.3.4-dev"
+version = "0.3.4"
 dependencies = [
  "anyhow",
  "chrono",
