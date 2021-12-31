@@ -1,21 +1,17 @@
 use anyhow::{anyhow, bail, Error, Result};
 use chrono::{DateTime, NaiveDate, NaiveDateTime, TimeZone, Utc};
-use clap::{self, crate_description, crate_version, Args, Parser};
+use clap::{self, AppSettings, Args, Parser};
 use clap_generate::Shell;
 use std::path::PathBuf;
 use strum::{EnumString, EnumVariantNames, VariantNames};
 
 #[derive(Debug, Parser)]
-#[clap(
-    about = crate_description!(),
-    version = crate_version!(),
-)]
+#[clap(about, version)]
+#[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 pub enum Opt {
     /// Generate feature group data
-    #[clap(display_order = 1)]
     Group {
         /// Target group name
-        #[clap()]
         group: Option<String>,
 
         /// ID range
@@ -33,10 +29,8 @@ pub enum Opt {
     },
 
     /// Generate feature label data
-    #[clap(display_order = 2)]
     Label {
         /// Target group name
-        #[clap()]
         group: Option<String>,
 
         /// ID range
@@ -62,7 +56,6 @@ pub enum Opt {
     },
 
     /// Generate feature store schema
-    #[clap(display_order = 3)]
     Schema {
         /// Schema category
         #[clap(possible_values = SchemaCategory::VARIANTS, default_value = SchemaCategory::VARIANTS[0])]
@@ -75,14 +68,12 @@ pub enum Opt {
         format: SchemaFormatOpt,
     },
 
-    /// List available resources
-    #[clap(display_order = 4)]
+    /// List available groups
     List {
         #[clap(flatten)]
         recipe: RecipeOpt,
     },
 
-    #[clap(display_order = 100)]
     /// Output shell completion code
     Completion {
         /// Target shell name
@@ -94,14 +85,14 @@ pub enum Opt {
 #[derive(Debug, Args)]
 pub struct RandOpt {
     /// Seed for the random generator
-    #[clap(short, long, display_order = 100)]
+    #[clap(short, long)]
     pub seed: Option<u64>,
 }
 
 #[derive(Debug, Args)]
 pub struct RecipeOpt {
     /// Recipe file path
-    #[clap(short, long, display_order = 0)]
+    #[clap(short, long)]
     pub recipe: PathBuf,
 }
 

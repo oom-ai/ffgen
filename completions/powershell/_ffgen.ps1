@@ -27,7 +27,7 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
             [CompletionResult]::new('group', 'group', [CompletionResultType]::ParameterValue, 'Generate feature group data')
             [CompletionResult]::new('label', 'label', [CompletionResultType]::ParameterValue, 'Generate feature label data')
             [CompletionResult]::new('schema', 'schema', [CompletionResultType]::ParameterValue, 'Generate feature store schema')
-            [CompletionResult]::new('list', 'list', [CompletionResultType]::ParameterValue, 'List available resources')
+            [CompletionResult]::new('list', 'list', [CompletionResultType]::ParameterValue, 'List available groups')
             [CompletionResult]::new('completion', 'completion', [CompletionResultType]::ParameterValue, 'Output shell completion code')
             [CompletionResult]::new('help', 'help', [CompletionResultType]::ParameterValue, 'Print this message or the help of the given subcommand(s)')
             break
@@ -83,8 +83,6 @@ Register-ArgumentCompleter -Native -CommandName 'ffgen' -ScriptBlock {
             break
         }
         'ffgen;help' {
-            [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'Print help information')
-            [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'Print help information')
             break
         }
     })

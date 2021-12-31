@@ -9,7 +9,7 @@ _ffgen() {
     for i in ${COMP_WORDS[@]}
     do
         case "${i}" in
-            ffgen)
+            "$1")
                 cmd="ffgen"
                 ;;
             completion)
@@ -111,7 +111,7 @@ _ffgen() {
             return 0
             ;;
         ffgen__help)
-            opts="-h --help"
+            opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0

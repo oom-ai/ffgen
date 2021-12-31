@@ -25,7 +25,7 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand group 'Generate feature group data'
             cand label 'Generate feature label data'
             cand schema 'Generate feature store schema'
-            cand list 'List available resources'
+            cand list 'List available groups'
             cand completion 'Output shell completion code'
             cand help 'Print this message or the help of the given subcommand(s)'
         }
@@ -75,8 +75,6 @@ set edit:completion:arg-completer[ffgen] = [@words]{
             cand --help 'Print help information'
         }
         &'ffgen;help'= {
-            cand -h 'Print help information'
-            cand --help 'Print help information'
         }
     ]
     $completions[$command]
