@@ -14,8 +14,8 @@ pub enum Opt {
         /// Target group name
         group: Option<String>,
 
-        /// ID range
-        #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), display_order = 1)]
+        /// ID range (example: 1000..2000)
+        #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), value_name = "FROM..TO")]
         id_range: Option<(i64, i64)>,
 
         #[clap(flatten)]
@@ -33,16 +33,16 @@ pub enum Opt {
         /// Target group name
         group: Option<String>,
 
-        /// ID range
-        #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), display_order = 1)]
+        /// ID range (example: 1000..2000)
+        #[clap(long, short = 'I', parse(try_from_str = parse_i64_range), value_name = "FROM..TO")]
         id_range: Option<(i64, i64)>,
 
-        /// Label time range
-        #[clap(long, short = 'T', parse(try_from_str = parse_datetime_range), display_order = 2)]
+        /// Label time range (example: 2022-01-01..2022-01-31)
+        #[clap(long, short = 'T', parse(try_from_str = parse_datetime_range), value_name = "FROM..TO")]
         time_range: Option<(DateTime<Utc>, DateTime<Utc>)>,
 
         /// Max entries to generate
-        #[clap(short, long, default_value = "10", display_order = 3)]
+        #[clap(short, long, default_value = "10", value_name = "N")]
         limit: usize,
 
         #[clap(flatten)]
