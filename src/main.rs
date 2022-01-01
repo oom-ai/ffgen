@@ -61,7 +61,7 @@ fn try_main() -> Result<()> {
         }
         Opt::Completion { shell } => {
             let app = &mut Opt::into_app();
-            clap_generate::generate(shell, app, app.get_name().to_string(), &mut io::stdout())
+            clap_complete::generate(shell, app, app.get_name().to_string(), &mut io::stdout())
         }
     }
     Ok(())

@@ -1,7 +1,7 @@
 use anyhow::{anyhow, bail, Error, Result};
 use chrono::{DateTime, NaiveDate, NaiveDateTime, TimeZone, Utc};
 use clap::{self, AppSettings, Args, Parser};
-use clap_generate::Shell;
+use clap_complete::Shell;
 use std::path::PathBuf;
 use strum::{EnumString, EnumVariantNames, VariantNames};
 
