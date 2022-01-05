@@ -42,13 +42,6 @@ fn entity_id_type_default() -> EntityIdType {
 }
 
 impl Entity {
-    pub fn len(&self) -> usize {
-        match self.id_type {
-            EntityIdType::Int => self.id_range.end().to_string().len(),
-            EntityIdType::Md5 => 32,
-        }
-    }
-
     pub fn id(&self, value: i64) -> Box<dyn erased_serde::Serialize> {
         match self.id_type {
             EntityIdType::Int => Box::new(value),

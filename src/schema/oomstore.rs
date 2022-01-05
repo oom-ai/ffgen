@@ -9,7 +9,6 @@ pub type Schema = Entity;
 pub struct Entity {
     pub kind:        String,
     pub name:        String,
-    pub length:      usize,
     pub description: Option<String>,
     pub groups:      Vec<Group>,
 }
@@ -35,7 +34,6 @@ impl From<Recipe> for Entity {
     fn from(s: Recipe) -> Self {
         Entity {
             kind:        "Entity".into(),
-            length:      s.entity.len(),
             name:        s.entity.name,
             groups:      s
                 .groups
