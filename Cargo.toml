@@ -20,7 +20,7 @@ clap_complete = "3.1"
 fake = { version = "2.4", features = ["chrono", "uuid"] }
 serde = { version = "1.0", features = ["derive"] }
 chrono = { version = "0.4", features = ["serde"] }
-strum = { version = "0.23", features = ["derive"] }
+strum = { version = "0.24", features = ["derive"] }
 rand = "0.8"
 csv = "1.1"
 serde_yaml = "0.8"
@@ -35,7 +35,7 @@ md-5 = "0.10"
 clap = { version = "3.1", features = ["wrap_help", "derive"] }
 clap_complete = "3.1"
 chrono = { version = "0.4", features = ["serde"] }
-strum = { version = "0.23", features = ["derive"] }
+strum = { version = "0.24", features = ["derive"] }
 anyhow = "1.0"
 
 [profile.release]
