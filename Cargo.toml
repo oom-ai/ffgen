@@ -17,7 +17,7 @@ build = "build.rs"
 [dependencies]
 clap = { version = "3.1", features = ["wrap_help", "derive"] }
 clap_complete = "3.1"
-fake = { version = "2.4", features = ["chrono", "uuid"] }
+fake = { version = "2.5", features = ["chrono", "uuid"] }
 serde = { version = "1.0", features = ["derive"] }
 chrono = { version = "0.4", features = ["serde"] }
 strum = { version = "0.24", features = ["derive"] }
