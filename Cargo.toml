@@ -23,7 +23,7 @@ chrono = { version = "0.4", features = ["serde"] }
 strum = { version = "0.24", features = ["derive"] }
 rand = "0.8"
 csv = "1.1"
-serde_yaml = "0.8"
+serde_yaml = "0.9"
 erased-serde = "0.3"
 anyhow = "1.0"
 lazy_static = "1.4"
